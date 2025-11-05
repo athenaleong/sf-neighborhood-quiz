@@ -1,0 +1,115 @@
+{
+  "1": {
+    "image": "/question1.jpg",
+    "question": "You walk up the hill, searching for clues, and find a mysterious flyer that reads: 'seeking adventure? text this number.' What do you do?",
+    "options": [
+      "Obviously text the number immediately.",
+      "You think it's suspicious…some sort of phishing scam perhaps.",
+      "Investigate nearby poles to see if there's more flyers."
+    ]
+  },
+  "2": {
+    "image": "/question2.jpg",
+    "question": "You continue onwards, and eventually come across rainbow-painted streets, and notice two beautiful men sharing a kiss.",
+    "options": [
+      "A single tear escapes your eye - wow love is so beautiful.",
+      "You feel something stir within you…but no time to unpack that now, you're on a mission.",
+      "You quickly look away because you're lowkey homophobic."
+    ]
+  },
+  "3": {
+    "image": "/question3.jpg",
+    "question": "Suddenly, you spot a man in a suit. Is that Daniel Lurie, mayor of San Francisco? He reminds you of your father. Professional, distant. Surely he'd know what to do. You start running after Daniel, but he disappears into a waymo.",
+    "options": [
+      "Run after Daniel on foot",
+      "Hop on a BayWheels bike to chase him",
+      "Check if there's a bus nearby. You sure do love the MUNI.",
+      "Order your own waymo - no emergency is too urgent to not travel in style."
+    ]
+  },
+  "4": {
+    "image": "/question4.jpg",
+    "question": "Daniel's waymo zips through the streets of San Francisco, and you try your best to keep up. But Big Bus trundles through, cutting you off. You yell angrily, but by the time Big Bus passes, you've lost sight of Daniel.",
+    "options": [
+      "You drop to your knees and scream in agony.",
+      "You growl: \"daddy is not happy.\"",
+      "\"Daniel Lurie is truly just like my father…\" you whisper. You're overcome by mixed feelings about the 2024 election."
+    ]
+  },
+  "5": {
+    "image": "/question5.jpg",
+    "question": "Dejected, you carry onwards on foot. You're now on a bustling street, red paper lanterns dancing in the breeze, and merchants shouting their wares. One catches your eye, an elderly man sitting quietly, a few steps below the sidewalk. He beckons you closer.",
+    "options": [
+      "Excitedly approach the mysterious old man.",
+      "Cautiously approach the mysterious old man.",
+      "Look around to see if there's any younger, more attractive men with mystery."
+    ]
+  },
+  "6": {
+    "image": "/question6.jpg",
+    "question": "The man hands you a cup of tea. You realize you're parched, and quickly gulp it down kinda rudely. He pokes the leaves left behind, and decrees you must continue north on your quest. You think to yourself:",
+    "options": [
+      "\"Wow the elderly really have so much wisdom to offer.\"",
+      "\"Ugh, I wish I could just go home and curl up on my couch.\"",
+      "\"I could really go for some more tea right now…\""
+    ]
+  },
+  "7": {
+    "image": "/question7.jpg",
+    "question": "You resume your trek through Italian-painted streets. You notice a cannoli on the ground.",
+    "options": [
+      "You eat the cannoli.",
+      "Eww that's disgusting, why would you even ask me if I would do that? I'm not a f*cking animal.",
+      "Maybe this cannoli is a clue…"
+    ]
+  },
+  "8": {
+    "image": "/question8.jpg",
+    "question": "A woman in a hoodie and a backpack taps you on the shoulder. \"Hey, are you also here for the networking machine learning high-agency conference?\"",
+    "options": [
+      "\"Maybe? I don't know…\"",
+      "Tell her AGI is never gonna happen.",
+      "Ask her on a date. How often is it that you meet a woman in SF?"
+    ]
+  },
+  "9": {
+    "image": "/question9.jpg",
+    "question": "\"Then you might want this.\" She hands you a zine with different activities in the area, but one stands out to you the most.",
+    "options": [
+      "Cigarette-themed art show",
+      "Railroad museum",
+      "Big Sport",
+      "Mathematics debate",
+      "Philosophy saloon on War",
+      "Greasy Dave's All You Can Eat Buffett",
+      "A hackathon"
+    ]
+  },
+  "10": {
+    "image": "/question10.jpg",
+    "question": "In fact, it looks like it's happening today, right now.",
+    "options": [
+      "\"Hooray, a serendipitous adventure!\" You do a little jig.",
+      "\"Oh no, I didn't plan for this, I'd need to check my calendar…\" You fret."
+    ]
+  },
+  "11": {
+    "image": "/question11.jpg",
+    "question": "You hop on a cable car, then a bus, then another bus, then another bus, and finally reach Haight street. Suddenly, you spot a familiar face! \"There you are, we knew we'd find you here!\" It all comes back, you were adventuring with your…",
+    "options": [
+      "wonderful friends!",
+      "lovely partner <3",
+      "Family",
+      "Impossible, I'm a lone wolf. Awoooo!"
+    ]
+  },
+  "12": {
+    "image": "/question12.jpg",
+    "question": "Thrilled to be reunited, you continue along the colorful street, elated despite the musky, pungent smells. You spot a candy store and decide you deserve a little treat for all your troubles.",
+    "options": [
+      "Ooh, some gummies would be nice.",
+      "What would be nice is some gummies.",
+      "I would really like some gummies right now."
+    ]
+  }
+}

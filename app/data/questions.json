@@ -1,6 +1,7 @@
 {
   "1": {
-    "image": "/question1.jpg",
+    "image": "/uncropped/1.png",
+    "size": "medium",
     "question": "You walk up the hill, searching for clues, and find a mysterious flyer that reads: 'seeking adventure? text this number.' What do you do?",
     "options": [
       "Obviously text the number immediately.",
@@ -9,7 +10,8 @@
     ]
   },
   "2": {
-    "image": "/question2.jpg",
+    "image": "/uncropped/2.png",
+    "size": "medium",
     "question": "You continue onwards, and eventually come across rainbow-painted streets, and notice two beautiful men sharing a kiss.",
     "options": [
       "A single tear escapes your eye - wow love is so beautiful.",
@@ -18,7 +20,8 @@
     ]
   },
   "3": {
-    "image": "/question3.jpg",
+    "image": "/uncropped/3.png",
+    "size": "large",
     "question": "Suddenly, you spot a man in a suit. Is that Daniel Lurie, mayor of San Francisco? He reminds you of your father. Professional, distant. Surely he'd know what to do. You start running after Daniel, but he disappears into a waymo.",
     "options": [
       "Run after Daniel on foot",
@@ -28,7 +31,8 @@
     ]
   },
   "4": {
-    "image": "/question4.jpg",
+    "image": "/uncropped/4.png",
+    "size": "large",
     "question": "Daniel's waymo zips through the streets of San Francisco, and you try your best to keep up. But Big Bus trundles through, cutting you off. You yell angrily, but by the time Big Bus passes, you've lost sight of Daniel.",
     "options": [
       "You drop to your knees and scream in agony.",
@@ -37,7 +41,8 @@
     ]
   },
   "5": {
-    "image": "/question5.jpg",
+    "image": "/uncropped/5.png",
+    "size": "large",
     "question": "Dejected, you carry onwards on foot. You're now on a bustling street, red paper lanterns dancing in the breeze, and merchants shouting their wares. One catches your eye, an elderly man sitting quietly, a few steps below the sidewalk. He beckons you closer.",
     "options": [
       "Excitedly approach the mysterious old man.",
@@ -46,7 +51,8 @@
     ]
   },
   "6": {
-    "image": "/question6.jpg",
+    "image": "/uncropped/6.png",
+    "size": "medium",
     "question": "The man hands you a cup of tea. You realize you're parched, and quickly gulp it down kinda rudely. He pokes the leaves left behind, and decrees you must continue north on your quest. You think to yourself:",
     "options": [
       "\"Wow the elderly really have so much wisdom to offer.\"",
@@ -55,7 +61,8 @@
     ]
   },
   "7": {
-    "image": "/question7.jpg",
+    "image": "/uncropped/7.png",
+    "size": "small",
     "question": "You resume your trek through Italian-painted streets. You notice a cannoli on the ground.",
     "options": [
       "You eat the cannoli.",
@@ -64,7 +71,8 @@
     ]
   },
   "8": {
-    "image": "/question8.jpg",
+    "image": "/uncropped/8.png",
+    "size": "medium",
     "question": "A woman in a hoodie and a backpack taps you on the shoulder. \"Hey, are you also here for the networking machine learning high-agency conference?\"",
     "options": [
       "\"Maybe? I don't know…\"",
@@ -73,7 +81,8 @@
     ]
   },
   "9": {
-    "image": "/question9.jpg",
+    "image": "/uncropped/9.png",
+    "size": "medium",
     "question": "\"Then you might want this.\" She hands you a zine with different activities in the area, but one stands out to you the most.",
     "options": [
       "Cigarette-themed art show",
@@ -86,7 +95,8 @@
     ]
   },
   "10": {
-    "image": "/question10.jpg",
+    "image": "/uncropped/10.png",
+    "size": "small",
     "question": "In fact, it looks like it's happening today, right now.",
     "options": [
       "\"Hooray, a serendipitous adventure!\" You do a little jig.",
@@ -94,7 +104,8 @@
     ]
   },
   "11": {
-    "image": "/question11.jpg",
+    "image": "/uncropped/11.png",
+    "size": "large",
     "question": "You hop on a cable car, then a bus, then another bus, then another bus, and finally reach Haight street. Suddenly, you spot a familiar face! \"There you are, we knew we'd find you here!\" It all comes back, you were adventuring with your…",
     "options": [
       "wonderful friends!",
@@ -104,7 +115,8 @@
     ]
   },
   "12": {
-    "image": "/question12.jpg",
+    "image": "/uncropped/Untitled_Artwork 2.png",
+    "size": "medium",
     "question": "Thrilled to be reunited, you continue along the colorful street, elated despite the musky, pungent smells. You spot a candy store and decide you deserve a little treat for all your troubles.",
     "options": [
       "Ooh, some gummies would be nice.",

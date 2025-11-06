@@ -25,3 +25,4 @@ export default function FontLoader() {
 
   return null;
 }
+

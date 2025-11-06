@@ -10,7 +10,7 @@
     ]
   },
   "2": {
-    "image": "/uncropped/2.png",
+    "image": "/cropped/2.png",
     "size": "medium",
     "question": "You continue onwards, and eventually come across rainbow-painted streets, and notice two beautiful men sharing a kiss.",
     "options": [
@@ -61,7 +61,7 @@
     ]
   },
   "7": {
-    "image": "/uncropped/7.png",
+    "image": "/cropped/7-1.png",
     "size": "small",
     "question": "You resume your trek through Italian-painted streets. You notice a cannoli on the ground.",
     "options": [
@@ -71,7 +71,7 @@
     ]
   },
   "8": {
-    "image": "/uncropped/8.png",
+    "image": "/cropped/8-1.png",
     "size": "medium",
     "question": "A woman in a hoodie and a backpack taps you on the shoulder. \"Hey, are you also here for the networking machine learning high-agency conference?\"",
     "options": [
@@ -83,7 +83,7 @@
   "9": {
     "image": "/uncropped/9.png",
     "size": "medium",
-    "question": "\"Then you might want this.\" She hands you a zine with different activities in the area, but one stands out to you the most.",
+    "question": "\"Then you might want this.\" She airdrops you a guide with different activities in the area, but one stands out to you the most.",
     "options": [
       "Cigarette-themed art show",
       "Railroad museum",

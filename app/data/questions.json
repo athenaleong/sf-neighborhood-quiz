@@ -2,10 +2,10 @@
   "1": {
     "image": "/uncropped/1.png",
     "size": "medium",
-    "question": "You walk up the hill, searching for clues, and find a mysterious flyer that reads: 'seeking adventure? text this number.' What do you do?",
+    "question": "You walk up the hill, searching for clues, and find a mysterious flyer that reads: \"seeking adventure? text this number.\" What do you do?",
     "options": [
       "Obviously text the number immediately.",
-      "You think it's suspicious…some sort of phishing scam perhaps.",
+      "Think it's suspicious…some sort of phishing scam perhaps.",
       "Investigate nearby poles to see if there's more flyers."
     ]
   },
@@ -15,7 +15,7 @@
     "question": "You continue onwards, and eventually come across rainbow-painted streets, and notice two beautiful men sharing a kiss.",
     "options": [
       "A single tear escapes your eye - wow love is so beautiful.",
-      "You feel something stir within you…but no time to unpack that now, you're on a mission.",
+      "You feel something stir within you…but no time to unpack that, you're on a mission.",
       "You quickly look away because you're lowkey homophobic."
     ]
   },
@@ -35,9 +35,9 @@
     "size": "large",
     "question": "Daniel's waymo zips through the streets of San Francisco, and you try your best to keep up. But Big Bus trundles through, cutting you off. You yell angrily, but by the time Big Bus passes, you've lost sight of Daniel.",
     "options": [
-      "You drop to your knees and scream in agony.",
+      "You drop to your knees and scream, shaking your fist at the sky.",
       "You growl: \"daddy is not happy.\"",
-      "\"Daniel Lurie is truly just like my father…\" you whisper. You're overcome by mixed feelings about the 2024 election."
+      "\"Daniel Lurie really is just like my father…\" you mutter. You're overcome by mixed feelings about the 2024 election."
     ]
   },
   "5": {
@@ -53,10 +53,10 @@
   "6": {
     "image": "/uncropped/6.png",
     "size": "medium",
-    "question": "The man hands you a cup of tea. You realize you're parched, and quickly gulp it down kinda rudely. He pokes the leaves left behind, and decrees you must continue north on your quest. You think to yourself:",
+    "question": "The man hands you a cup of tea. You realize you're parched, and quickly gulp it down kinda rudely. He pokes the leaves left behind, and decrees you will find the answers you seek by continuing north. You think to yourself:",
     "options": [
-      "\"Wow the elderly really have so much wisdom to offer.\"",
-      "\"Ugh, I wish I could just go home and curl up on my couch.\"",
+      "\"Wow, I'm so grateful for the wisdom of my elders.\"",
+      "\"Ugh, I gotta keep walking?? I wanna go home :(\"",
       "\"I could really go for some more tea right now…\""
     ]
   },
@@ -73,10 +73,10 @@
   "8": {
     "image": "/cropped/8-1.png",
     "size": "medium",
-    "question": "A woman in a hoodie and a backpack taps you on the shoulder. \"Hey, are you also here for the networking machine learning high-agency conference?\"",
+    "question": "A woman in a hoodie and a backpack interrupts, tapping you on the shoulder. \"Hey, are you also here for the networking machine learning high-agency conference?\"",
     "options": [
       "\"Maybe? I don't know…\"",
-      "Tell her AGI is never gonna happen.",
+      "Tell her AGI is never gonna happen and is also stupid.",
       "Ask her on a date. How often is it that you meet a woman in SF?"
     ]
   },
@@ -89,15 +89,15 @@
       "Railroad museum",
       "Big Sport",
       "Mathematics debate",
-      "Philosophy saloon on War",
+      "Philosophy saloon on The Merits of War",
       "Greasy Dave's All You Can Eat Buffett",
-      "A hackathon"
+      "Hackathon to make the best ChatGPT wrapper"
     ]
   },
   "10": {
     "image": "/uncropped/10.png",
     "size": "small",
-    "question": "In fact, it looks like it's happening today, right now.",
+    "question": "Oh sh*t, it's happening right now, in the Marina.",
     "options": [
       "\"Hooray, a serendipitous adventure!\" You do a little jig.",
       "\"Oh no, I didn't plan for this, I'd need to check my calendar…\" You fret."
@@ -106,22 +106,40 @@
   "11": {
     "image": "/uncropped/11.png",
     "size": "large",
-    "question": "You hop on a cable car, then a bus, then another bus, then another bus, and finally reach Haight street. Suddenly, you spot a familiar face! \"There you are, we knew we'd find you here!\" It all comes back, you were adventuring with your…",
+    "question": "You start sprinting, but as you draw closer to the water, you're swarmed by a crowd of runners, sweeping you along to a grassy field. Then they all start stretching. One face looks familiar. Wait, isn't that your…",
     "options": [
-      "wonderful friends!",
-      "lovely partner <3",
-      "Family",
-      "Impossible, I'm a lone wolf. Awoooo!"
+      "wonderful friend!",
+      "lovely partner",
+      "family",
+      "Impossible, I'm a lone wolf. Awwooo!"
     ]
   },
   "12": {
     "image": "/uncropped/Untitled_Artwork 2.png",
     "size": "medium",
-    "question": "Thrilled to be reunited, you continue along the colorful street, elated despite the musky, pungent smells. You spot a candy store and decide you deserve a little treat for all your troubles.",
+    "question": "They're happy to see you, and ask where you've been.",
+    "options": [
+      "Explain you woke up in a park and couldn't remember much.",
+      "Lie, just in case you were up to no good."
+    ]
+  },
+  "13": {
+    "image": "/uncropped/Untitled_Artwork 2.png",
+    "size": "large",
+    "question": "They suggest retracing your steps to figure out what happened. They remind you that you were on Haight Street yesterday, so you hop on a bus, then another bus, then a cable car, then a third bus, and finally reach Haight. As you take in the musky, pungent smells, you spot a candy store and decide you deserve a little treat for all your troubles.",
     "options": [
       "Ooh, some gummies would be nice.",
       "What would be nice is some gummies.",
       "I would really like some gummies right now."
+    ]
+  },
+  "14": {
+    "image": "/uncropped/Untitled_Artwork 2.png",
+    "size": "large",
+    "question": "You continue trekking along, and eventually reach Dolores Park as the sun is beginning to set. It's a beautiful view, so you decide to take a break and sprawl on the grass, chewing gummies. Tuckered out from the day's activities, you doze off…Then you suddenly wake on a park on a hill, dazed and confused.",
+    "options": [
+      "Woah…who am I…how did I get here…",
+      "Oh f*ck, not this again…"
     ]
   }
 }

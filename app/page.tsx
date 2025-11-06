@@ -15,7 +15,7 @@ interface QuestionsData {
   [key: string]: Question;
 }
 
-const TOTAL_QUESTIONS = 12;
+const TOTAL_QUESTIONS = 14;
 
 export default function Home() {
   const [questions] = useState<QuestionsData>(questionsData as QuestionsData);

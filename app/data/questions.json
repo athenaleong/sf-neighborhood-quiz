@@ -1,4 +1,12 @@
 {
+  "0": {
+    "image": "/cropped/story-opener-background.png",
+    "size": "small",
+    "question": "You suddenly wake on a park on a hill, dazed and confused. Who am I…How did I get here…",
+    "options": [
+      "Continue..."
+    ]
+  },
   "1": {
     "image": "/uncropped/1.png",
     "size": "medium",

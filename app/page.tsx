@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import questionsData from './data/questions.json';
 
 interface Question {
@@ -17,11 +17,61 @@ interface QuestionsData {
 
 const TOTAL_QUESTIONS = 14;
 
+// Component for question 0 overlay with natural blinking/opening effect
+function Question0Overlay({ onComplete, onUpdate }: { onComplete: () => void; onUpdate: (opacity: number) => void }) {
+  const [blurAmount, setBlurAmount] = useState(20);
+  const opacity = useMotionValue(1);
+  const blur = useTransform(opacity, [0, 1], [0, 20]);
+
+  useEffect(() => {
+    const unsubscribeOpacity = opacity.on('change', (latest) => {
+      onUpdate(latest);
+      // Trigger zoom immediately when opacity reaches 0
+      if (latest <= 0) {
+        onComplete();
+      }
+    });
+    const unsubscribeBlur = blur.on('change', (latest) => {
+      setBlurAmount(Math.round(latest));
+    });
+    return () => {
+      unsubscribeOpacity();
+      unsubscribeBlur();
+    };
+  }, [opacity, blur, onUpdate, onComplete]);
+
+  return (
+    <motion.div
+      className="fixed inset-0"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 1)',
+        backdropFilter: `blur(${blurAmount}px)`,
+        WebkitBackdropFilter: `blur(${blurAmount}px)`,
+        zIndex: 50,
+        pointerEvents: 'none'
+      }}
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 0 }}
+      transition={{ 
+        delay: 0.8,
+        duration: 3.0,
+        ease: 'easeOut'
+      }}
+      onUpdate={(latest) => {
+        if (typeof latest === 'object' && 'opacity' in latest) {
+          opacity.set((latest as { opacity: number }).opacity);
+        }
+      }}
+      onAnimationComplete={onComplete}
+    />
+  );
+}
+
 export default function Home() {
   const [questions] = useState<QuestionsData>(questionsData as QuestionsData);
   
   // Always start with default values to match server render
-  const [currentQuestionNum, setCurrentQuestionNum] = useState<number>(1);
+  const [currentQuestionNum, setCurrentQuestionNum] = useState<number>(0);
   const [answers, setAnswers] = useState<number[]>(new Array(TOTAL_QUESTIONS).fill(-1));
 
   // Restore from localStorage after component mounts (client-side only)
@@ -33,7 +83,7 @@ export default function Home() {
     const savedQuestion = localStorage.getItem('currentQuestion');
     if (savedQuestion) {
       const parsedQuestion = parseInt(savedQuestion, 10);
-      if (parsedQuestion >= 1 && parsedQuestion <= TOTAL_QUESTIONS) {
+      if (parsedQuestion >= 0 && parsedQuestion <= TOTAL_QUESTIONS) {
         setCurrentQuestionNum(parsedQuestion);
       }
     }
@@ -58,7 +108,7 @@ export default function Home() {
 
   // Save progress to localStorage whenever it changes
   useEffect(() => {
-    if (currentQuestionNum > 0) {
+    if (currentQuestionNum >= 0) {
       localStorage.setItem('currentQuestion', currentQuestionNum.toString());
     }
   }, [currentQuestionNum]);
@@ -73,11 +123,16 @@ export default function Home() {
   const handleOptionClick = (optionIndex: number) => {
     // Save the answer
     const newAnswers = [...answers];
+    if (currentQuestionNum > 0) {
     newAnswers[currentQuestionNum - 1] = optionIndex;
+    }
     setAnswers(newAnswers);
 
     // Move to next question
-    if (currentQuestionNum < TOTAL_QUESTIONS) {
+    if (currentQuestionNum === 0) {
+      // Story opener - move to question 1
+      setCurrentQuestionNum(1);
+    } else if (currentQuestionNum < TOTAL_QUESTIONS) {
       setCurrentQuestionNum(currentQuestionNum + 1);
     } else {
       // Quiz completed - you can navigate to results page here
@@ -87,20 +142,24 @@ export default function Home() {
   };
 
   const handleBack = () => {
-    if (currentQuestionNum > 1) {
+    if (currentQuestionNum > 0) {
       setCurrentQuestionNum(currentQuestionNum - 1);
     }
   };
 
   const handleRetry = () => {
-    setCurrentQuestionNum(1);
+    setCurrentQuestionNum(0);
     setAnswers(new Array(TOTAL_QUESTIONS).fill(-1));
-    localStorage.setItem('currentQuestion', '1');
+    localStorage.setItem('currentQuestion', '0');
     localStorage.setItem('answerArray', JSON.stringify(new Array(TOTAL_QUESTIONS).fill(-1)));
   };
 
   const currentQuestion = questions[currentQuestionNum.toString()];
   const [shuffleIndex, setShuffleIndex] = useState(0);
+  const [question0VisitKey, setQuestion0VisitKey] = useState(0);
+  const [question0AnimationComplete, setQuestion0AnimationComplete] = useState(false);
+  const [question0BoxVisible, setQuestion0BoxVisible] = useState(false);
+  const [question0OverlayComplete, setQuestion0OverlayComplete] = useState(false);
   const [question3VisitKey, setQuestion3VisitKey] = useState(0);
   const [question4VisitKey, setQuestion4VisitKey] = useState(0);
   const [question5VisitKey, setQuestion5VisitKey] = useState(0);
@@ -132,6 +191,33 @@ export default function Home() {
       return ['/cropped/10-1.png', '/cropped/10-2.png'];
     }
     return null;
+  }, [currentQuestionNum]);
+
+  // Track visits to question 0 to re-trigger animation
+  useEffect(() => {
+    if (currentQuestionNum === 0) {
+      // Reset animation complete state
+      const resetTimer = setTimeout(() => {
+        setQuestion0AnimationComplete(false);
+        setQuestion0BoxVisible(false);
+        setQuestion0OverlayComplete(false);
+      }, 0);
+      // Increment visit key to force remount and re-trigger animation
+      const timer = setTimeout(() => {
+        setQuestion0VisitKey((prev) => prev + 1);
+      }, 0);
+      return () => {
+        clearTimeout(resetTimer);
+        clearTimeout(timer);
+      };
+    } else {
+      const timer = setTimeout(() => {
+        setQuestion0AnimationComplete(false);
+        setQuestion0BoxVisible(false);
+        setQuestion0OverlayComplete(false);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
   }, [currentQuestionNum]);
 
   // Track visits to question 3 to re-trigger animation
@@ -412,6 +498,84 @@ export default function Home() {
 
   // Render animated image based on question number
   const renderAnimatedImage = () => {
+    if (currentQuestionNum === 0) {
+      // Question 0: Story opener - waking up effect with dark/blurry overlay, then zoom out
+      return (
+        <>
+          {/* Image - visible from start, zoomed in, waiting for overlay to clear */}
+          <motion.div
+            key={`question-0-visit-${question0VisitKey}`}
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent bg-contain bg-center bg-no-repeat"
+            style={{
+              backgroundImage: currentQuestion.image ? `url(${currentQuestion.image})` : 'none',
+              height: '35vh',
+              zIndex: 0,
+              position: 'absolute'
+            }}
+            initial={{ 
+              scale: 1.5,
+              opacity: 1,
+              x: '-50%',
+              y: '-50%',
+              top: '50%',
+              left: '50%'
+            }}
+            animate={question0OverlayComplete ? { 
+              scale: 1,
+              opacity: 1,
+              x: '0%',
+              y: '0%',
+              top: '0%',
+              left: '0%'
+            } : {
+              scale: 1.5,
+              opacity: 1,
+              x: '-50%',
+              y: '-50%',
+              top: '50%',
+              left: '50%'
+            }}
+            transition={question0OverlayComplete ? { 
+              duration: 1.0, 
+              ease: 'easeOut',
+              delay: 0
+            } : {
+              duration: 0
+            }}
+            onAnimationComplete={() => {
+              if (question0OverlayComplete) {
+                setTimeout(() => {
+                  setQuestion0AnimationComplete(true);
+                  // Show question box after image animation completes
+                  setTimeout(() => {
+                    setQuestion0BoxVisible(true);
+                  }, 100);
+                }, 0);
+              }
+            }}
+          >
+            {!currentQuestion.image && (
+              <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                Image Placeholder
+              </div>
+            )}
+          </motion.div>
+          
+          {/* Waking up overlay - dark and blurry to light and clear */}
+          <Question0Overlay
+            key={`question-0-overlay-${question0VisitKey}`}
+            onComplete={() => {
+              setQuestion0OverlayComplete(true);
+            }}
+            onUpdate={() => {
+              // Blur is handled by motion values
+              // Zoom will be triggered immediately when opacity reaches 0 via onComplete
+            }}
+          />
+        </>
+      );
+    }
+
     if (currentQuestionNum === 3) {
       // Question 3: Slide in from below
       return (
@@ -814,9 +978,9 @@ export default function Home() {
         <div className="w-full flex justify-between items-center px-6 pt-2 pb-2">
           <button
             onClick={handleBack}
-            disabled={currentQuestionNum === 1}
+            disabled={currentQuestionNum === 0}
             className={`p-2 rounded-lg transition-all duration-200 ${
-              currentQuestionNum === 1
+              currentQuestionNum === 0
                 ? 'opacity-30 cursor-not-allowed'
                 : 'hover:bg-black/10 active:scale-95'
             }`}
@@ -860,14 +1024,20 @@ export default function Home() {
           </button>
         </div>
         {/* Question template - vertical layout */}
-        <div className="flex flex-col items-center pb-8 flex-1">
+        <div className="flex flex-col items-center pb-8 flex-1" style={{ position: 'relative' }}>
 
           {/* Image on top - with per-question animations */}
           {renderAnimatedImage()}
+          
+          {/* Spacer for question 0 to account for absolutely positioned image */}
+          {currentQuestionNum === 0 && (
+            <div style={{ height: '35vh', width: '100%' }} />
+          )}
 
           {/* Question text box */}
-          <div className="w-full mb-4 px-2" style={{ position: 'relative', zIndex: 1 }}>
-            <div 
+          {(currentQuestionNum !== 0 || question0BoxVisible) && (
+            <div className="w-full mb-4 px-2" style={{ position: 'relative', zIndex: 1 }}>
+              <motion.div 
               className="rounded-lg p-6 text-center bg-center bg-no-repeat"
               style={{ 
                 backgroundImage: currentQuestion.size === 'large' 
@@ -886,28 +1056,48 @@ export default function Home() {
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
-            >
-              <h2 className="text-md font-md text-black leading-tight" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                onAnimationComplete={() => {
+                  // After question box appears, show options
+                  if (currentQuestionNum === 0) {
+                    setTimeout(() => {
+                      setQuestion0AnimationComplete(true);
+                    }, 0);
+                  }
+                }}
+              >
+                <h2 className="text-md font-md text-black leading-tight" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
                 {currentQuestion.question}
               </h2>
+              </motion.div>
             </div>
-          </div>
+          )}
 
           {/* Options */}
-          <div className={`w-full flex flex-col flex-1 px-6 ${currentQuestion.options.length > 4 ? 'gap-2' : 'gap-4'}`} style={{ position: 'relative', zIndex: 1 }}>
+          {(currentQuestionNum !== 0 || question0AnimationComplete) && (
+            <motion.div 
+              className={`w-full flex flex-col flex-1 px-6 ${currentQuestion.options.length > 4 ? 'gap-2' : 'gap-4'}`} 
+              style={{ position: 'relative', zIndex: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: currentQuestionNum === 0 ? 0.5 : 0 }}
+            >
             {currentQuestion.options.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleOptionClick(index)}
-                className={`w-full bg-white text-black rounded-lg px-4 text-md font-md transition-all duration-200 hover:bg-gray-100 active:scale-95 text-left shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
-                  currentQuestion.options.length > 4 ? 'py-1' : 'py-1'
+                  className={`w-full bg-white text-black rounded-lg px-4 text-md font-md transition-all duration-200 hover:bg-gray-100 active:scale-95 text-left shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
+                    currentQuestion.options.length > 4 ? 'py-1' : 'py-1'
                 }`}
-                style={{ fontFamily: "'Pixelify Sans', sans-serif", transform: 'rotate(0deg)' }}
+                  style={{ fontFamily: "'Pixelify Sans', sans-serif", transform: 'rotate(0deg)' }}
               >
                 {option}
               </button>
             ))}
-          </div>
+            </motion.div>
+          )}
         </div>
       </div>
     </div>

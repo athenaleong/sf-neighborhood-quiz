@@ -109,6 +109,13 @@ export default function Home() {
   const [question9VisitKey, setQuestion9VisitKey] = useState(0);
   const [question9EntryComplete, setQuestion9EntryComplete] = useState(false);
   const [question10VisitKey, setQuestion10VisitKey] = useState(0);
+  const [question12VisitKey, setQuestion12VisitKey] = useState(0);
+  const [question12SunIndex, setQuestion12SunIndex] = useState(0);
+  const [question12LightningOn, setQuestion12LightningOn] = useState(false);
+  const [question13VisitKey, setQuestion13VisitKey] = useState(0);
+  const [question13ImageIndex, setQuestion13ImageIndex] = useState(0);
+  const [question14VisitKey, setQuestion14VisitKey] = useState(0);
+  const [question14ImageIndex, setQuestion14ImageIndex] = useState(0);
 
   // For question 4: define the images to shuffle between
   const question4Images = useMemo(() => {
@@ -254,6 +261,129 @@ export default function Home() {
     }
   }, [currentQuestionNum, question10Images]);
 
+  // Track visits to question 12 to re-trigger animation
+  useEffect(() => {
+    if (currentQuestionNum === 12) {
+      // Reset states
+      const resetTimer1 = setTimeout(() => {
+        setQuestion12SunIndex(0);
+      }, 0);
+      const resetTimer2 = setTimeout(() => {
+        setQuestion12LightningOn(false);
+      }, 0);
+      // Increment visit key to force remount and re-trigger animation
+      const timer = setTimeout(() => {
+        setQuestion12VisitKey((prev) => prev + 1);
+      }, 0);
+      return () => {
+        clearTimeout(resetTimer1);
+        clearTimeout(resetTimer2);
+        clearTimeout(timer);
+      };
+    }
+  }, [currentQuestionNum]);
+
+  // Handle question 12 sun alternation (every 1 second)
+  useEffect(() => {
+    if (currentQuestionNum === 12) {
+      const interval = setInterval(() => {
+        setQuestion12SunIndex((prev) => (prev === 0 ? 1 : 0));
+      }, 1000); // Alternate every 1 second
+
+      return () => clearInterval(interval);
+    }
+  }, [currentQuestionNum, question12VisitKey]);
+
+  // Handle question 12 lightning alternation (0.5s on, 2s off)
+  useEffect(() => {
+    if (currentQuestionNum === 12) {
+      // Start with lightning off
+      const resetTimer = setTimeout(() => {
+        setQuestion12LightningOn(false);
+      }, 0);
+      
+      let timeout: NodeJS.Timeout | null = null;
+      
+      const cycleLightning = () => {
+        // Lightning on for 0.5 seconds
+        setQuestion12LightningOn(true);
+        timeout = setTimeout(() => {
+          // Lightning off for 2 seconds
+          setQuestion12LightningOn(false);
+          timeout = setTimeout(cycleLightning, 2000);
+        }, 500);
+      };
+
+      // Start the cycle after initial delay
+      timeout = setTimeout(cycleLightning, 2000);
+
+      return () => {
+        clearTimeout(resetTimer);
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+      };
+    }
+  }, [currentQuestionNum, question12VisitKey]);
+
+  // Track visits to question 13 to re-trigger animation
+  useEffect(() => {
+    if (currentQuestionNum === 13) {
+      // Reset image index
+      const resetTimer = setTimeout(() => {
+        setQuestion13ImageIndex(0);
+      }, 0);
+      // Increment visit key to force remount and re-trigger animation
+      const timer = setTimeout(() => {
+        setQuestion13VisitKey((prev) => prev + 1);
+      }, 0);
+      return () => {
+        clearTimeout(resetTimer);
+        clearTimeout(timer);
+      };
+    }
+  }, [currentQuestionNum]);
+
+  // Handle question 13 image alternation (every 0.5 seconds)
+  useEffect(() => {
+    if (currentQuestionNum === 13) {
+      const interval = setInterval(() => {
+        setQuestion13ImageIndex((prev) => (prev === 0 ? 1 : 0));
+      }, 500); // Alternate every 0.5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [currentQuestionNum, question13VisitKey]);
+
+  // Track visits to question 14 to re-trigger animation
+  useEffect(() => {
+    if (currentQuestionNum === 14) {
+      // Reset image index
+      const resetTimer = setTimeout(() => {
+        setQuestion14ImageIndex(0);
+      }, 0);
+      // Increment visit key to force remount and re-trigger animation
+      const timer = setTimeout(() => {
+        setQuestion14VisitKey((prev) => prev + 1);
+      }, 0);
+      return () => {
+        clearTimeout(resetTimer);
+        clearTimeout(timer);
+      };
+    }
+  }, [currentQuestionNum]);
+
+  // Handle question 14 image alternation (every 0.5 seconds)
+  useEffect(() => {
+    if (currentQuestionNum === 14) {
+      const interval = setInterval(() => {
+        setQuestion14ImageIndex((prev) => (prev === 0 ? 1 : 0));
+      }, 500); // Alternate every 0.5 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [currentQuestionNum, question14VisitKey]);
+
   // Handle image shuffling for question 4
   useEffect(() => {
     if (currentQuestionNum === 4 && question4Images) {
@@ -287,7 +417,7 @@ export default function Home() {
       return (
         <motion.div
           key={`question-3-visit-${question3VisitKey}`}
-          className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6 bg-contain bg-center bg-no-repeat"
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent bg-contain bg-center bg-no-repeat"
           style={{
             backgroundImage: currentQuestion.image ? `url(${currentQuestion.image})` : 'none',
             height: '35vh',
@@ -312,7 +442,7 @@ export default function Home() {
       return (
         <motion.div
           key={`question-4-visit-${question4VisitKey}`}
-          className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6"
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
           style={{ height: '35vh', zIndex: 0 }}
           initial={{ x: '-100%', opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -334,7 +464,7 @@ export default function Home() {
       return (
         <div
           key={`question-5-visit-${question5VisitKey}`}
-          className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6"
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
           style={{ height: '35vh', zIndex: 0, position: 'relative' }}
         >
           {/* First image (5-1) */}
@@ -366,7 +496,7 @@ export default function Home() {
       return (
         <div
           key={`question-6-visit-${question6VisitKey}`}
-          className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6"
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
           style={{ height: '40vh', zIndex: 0, position: 'relative' }}
         >
           {/* First image (6-1) */}
@@ -408,7 +538,7 @@ export default function Home() {
       return (
         <div
           key={`question-8-visit-${question8VisitKey}`}
-          className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6"
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
           style={{ height: '35vh', zIndex: 0, position: 'relative' }}
         >
           {/* First image (8-1) - spiral zoom-out animation */}
@@ -451,7 +581,7 @@ export default function Home() {
       return (
         <motion.div
           key={`question-9-visit-${question9VisitKey}`}
-          className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6"
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
           style={{ height: '35vh', zIndex: 0 }}
           initial={{ 
             y: '100%',
@@ -508,17 +638,137 @@ export default function Home() {
       return (
         <motion.div
           key={`question-10-visit-${question10VisitKey}`}
-          className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6"
-          style={{ height: '35vh', zIndex: 0 }}
+          className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
+          style={{ height: '35vh', zIndex: 0, position: 'relative' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
+          {/* First image (10-1) */}
           <div
-            key={shuffleIndex}
-            className="w-full h-full bg-contain bg-center bg-no-repeat"
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
             style={{
-              backgroundImage: question10Images ? `url(${question10Images[shuffleIndex]})` : 'none',
+              backgroundImage: 'url(/cropped/10-1.png)',
+              opacity: shuffleIndex === 0 ? 1 : 0,
+              transition: 'opacity 0s'
+            }}
+          />
+          {/* Second image (10-2) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: 'url(/cropped/10-2.png)',
+              opacity: shuffleIndex === 1 ? 1 : 0,
+              transition: 'opacity 0s'
+            }}
+          />
+        </motion.div>
+      );
+    }
+
+    if (currentQuestionNum === 12) {
+      // Question 12: Layered animation with lightning (bottom), sun (middle), and 12.png (top)
+      return (
+        <motion.div
+          key={`question-12-visit-${question12VisitKey}`}
+          className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
+          style={{ height: '35vh', zIndex: 0, position: 'relative' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Lightning layer (bottom) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: question12LightningOn 
+                ? 'url(/cropped/12-lightning-on.png)' 
+                : 'url(/cropped/12-lightning-off.png)',
+              zIndex: 1
+            }}
+          />
+          {/* Sun layer (middle) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: question12SunIndex === 0 
+                ? 'url(/cropped/12-sun-left.png)' 
+                : 'url(/cropped/12-sun-right.png)',
+              zIndex: 2
+            }}
+          />
+          {/* 12.png layer (top, always visible) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: 'url(/cropped/12.png)',
+              zIndex: 3
+            }}
+          />
+        </motion.div>
+      );
+    }
+
+    if (currentQuestionNum === 13) {
+      // Question 13: Alternate between 13-1.png and 13-2.png every 2 seconds
+      return (
+        <motion.div
+          key={`question-13-visit-${question13VisitKey}`}
+          className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
+          style={{ height: '35vh', zIndex: 0, position: 'relative' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* First image (13-1) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: 'url(/cropped/13-1.png)',
+              opacity: question13ImageIndex === 0 ? 1 : 0,
+              transition: 'opacity 0s'
+            }}
+          />
+          {/* Second image (13-2) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: 'url(/cropped/13-2.png)',
+              opacity: question13ImageIndex === 1 ? 1 : 0,
+              transition: 'opacity 0s'
+            }}
+          />
+        </motion.div>
+      );
+    }
+
+    if (currentQuestionNum === 14) {
+      // Question 14: Alternate between 14-1.png and 14-2.png every 0.5 seconds
+      return (
+        <motion.div
+          key={`question-14-visit-${question14VisitKey}`}
+          className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent"
+          style={{ height: '35vh', zIndex: 0, position: 'relative' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* First image (14-1) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: 'url(/cropped/14-1.png)',
+              opacity: question14ImageIndex === 0 ? 1 : 0,
+              transition: 'opacity 0s'
+            }}
+          />
+          {/* Second image (14-2) */}
+          <div
+            className="w-full h-full bg-contain bg-center bg-no-repeat absolute inset-0"
+            style={{
+              backgroundImage: 'url(/cropped/14-2.png)',
+              opacity: question14ImageIndex === 1 ? 1 : 0,
+              transition: 'opacity 0s'
             }}
           />
         </motion.div>
@@ -529,7 +779,7 @@ export default function Home() {
     return (
       <motion.div
         key={`question-${currentQuestionNum}`}
-        className="w-full mb-4 rounded-lg overflow-hidden bg-transparent px-6 bg-contain bg-center bg-no-repeat"
+            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent bg-contain bg-center bg-no-repeat"
         style={{
           backgroundImage: currentQuestion.image ? `url(${currentQuestion.image})` : 'none',
           height: '35vh',

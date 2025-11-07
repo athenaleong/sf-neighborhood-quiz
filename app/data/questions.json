@@ -104,7 +104,7 @@
     ]
   },
   "11": {
-    "image": "/uncropped/11.png",
+    "image": "/cropped/11.png",
     "size": "large",
     "question": "You start sprinting, but as you draw closer to the water, you're swarmed by a crowd of runners, sweeping you along to a grassy field. Then they all start stretching. One face looks familiar. Wait, isn't that your…",
     "options": [
@@ -124,7 +124,7 @@
     ]
   },
   "13": {
-    "image": "/uncropped/Untitled_Artwork 2.png",
+    "image": "/cropped/13.png",
     "size": "large",
     "question": "They suggest retracing your steps to figure out what happened. They remind you that you were on Haight Street yesterday, so you hop on a bus, then another bus, then a cable car, then a third bus, and finally reach Haight. As you take in the musky, pungent smells, you spot a candy store and decide you deserve a little treat for all your troubles.",
     "options": [

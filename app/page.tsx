@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   const router = useRouter();
@@ -10,6 +11,8 @@ export default function Home() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   
   const baseImage = '/cropped/opener-base.png';
+  const questionImage = '/cropped/question.png';
+  const startButtonImage = '/cropped/start-button.png';
   const overlayImages = [
     '/cropped/opener-overlay-1.png',
     '/cropped/opener-overlay-2.png',
@@ -19,7 +22,7 @@ export default function Home() {
 
   // Preload all images to prevent white flashes
   useEffect(() => {
-    const allImages = [baseImage, ...overlayImages];
+    const allImages = [baseImage, questionImage, startButtonImage, ...overlayImages];
     const imagePromises = allImages.map((src) => {
       return new Promise((resolve, reject) => {
         const img = new window.Image();
@@ -104,6 +107,61 @@ export default function Home() {
         />
       </div>
 
+      {/* Question image - positioned 10% from top */}
+      {imagesLoaded && (
+        <motion.div 
+          className="absolute left-0 right-0 flex justify-center"
+          style={{
+            top: '5%',
+            zIndex: 3,
+            width: '100%',
+            paddingLeft: `max(1.5rem, var(--sal))`,
+            paddingRight: `max(1.5rem, var(--sar))`,
+            boxSizing: 'border-box'
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ 
+            opacity: 1,
+            rotate: [0, -2, 2, -2, 0]
+          }}
+          transition={{
+            opacity: {
+              duration: 1,
+              ease: 'easeOut'
+            },
+            rotate: {
+              duration: 3,
+              ease: 'easeInOut',
+              repeat: Infinity,
+              repeatDelay: 0.5
+            }
+          }}
+        >
+          <div
+            className="relative"
+            style={{
+              width: '100%',
+              maxWidth: '90%',
+              aspectRatio: 'auto'
+            }}
+          >
+            <Image
+              src={questionImage}
+              alt="What SF neighborhood are you?"
+              width={800}
+              height={200}
+              className="object-contain w-full h-auto"
+              priority
+              unoptimized
+              style={{
+                margin: 0,
+                padding: 0
+              }}
+            />
+          </div>
+        </motion.div>
+      )}
+
       {/* Animated overlay images - cycle on top of base */}
       {imagesLoaded && (
         <div 
@@ -160,24 +218,51 @@ export default function Home() {
       )}
 
       {/* Start button - overlay on top */}
-      <div 
-        className="absolute left-0 right-0 z-10"
-        style={{
-          bottom: `calc(var(--sab) + 2rem)`,
-          paddingLeft: `max(1.5rem, var(--sal))`,
-          paddingRight: `max(1.5rem, var(--sar))`,
-          width: '100%',
-          boxSizing: 'border-box'
-        }}
-      >
-        <button
-          onClick={handleStart}
-          className="w-full bg-black text-white rounded-lg px-6 py-4 text-lg font-medium transition-all duration-200 hover:bg-zinc-800 active:scale-95"
-          style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+      {imagesLoaded && (
+        <motion.div 
+          className="absolute left-0 right-0 z-10 flex justify-center"
+          style={{
+            bottom: `calc(5dvh + var(--sab))`,
+            paddingLeft: `max(1.5rem, var(--sal))`,
+            paddingRight: `max(1.5rem, var(--sar))`,
+            width: '100%',
+            boxSizing: 'border-box'
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: 1,
+            ease: 'easeOut',
+            delay: 0.5
+          }}
         >
-          Start
-        </button>
-      </div>
+          <button
+            onClick={handleStart}
+            className="relative transition-all duration-200 active:scale-95 cursor-pointer"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              margin: 0
+            }}
+          >
+            <Image
+              src={startButtonImage}
+              alt="Start"
+              width={200}
+              height={200}
+              className="object-contain"
+              priority
+              unoptimized
+              style={{
+                margin: 0,
+                padding: 0,
+                display: 'block'
+              }}
+            />
+          </button>
+        </motion.div>
+      )}
     </div>
   );
 }

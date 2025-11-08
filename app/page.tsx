@@ -23,14 +23,22 @@ export default function Home() {
     const imagePromises = allImages.map((src) => {
       return new Promise((resolve, reject) => {
         const img = new window.Image();
-        img.onload = resolve;
+        img.onload = () => {
+          // Force image to stay in cache
+          resolve(img);
+        };
         img.onerror = reject;
-        img.src = src;
+        // Use absolute URL for better caching
+        const absoluteSrc = src.startsWith('/') ? `${window.location.origin}${src}` : src;
+        img.src = absoluteSrc;
       });
     });
 
     Promise.all(imagePromises).then(() => {
-      setImagesLoaded(true);
+      // Small delay to ensure images are fully cached
+      setTimeout(() => {
+        setImagesLoaded(true);
+      }, 100);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -110,33 +118,40 @@ export default function Home() {
             zIndex: 2
           }}
         >
-          <div
-            className="absolute inset-0"
-            style={{ 
-              pointerEvents: 'none', 
-              margin: 0, 
-              padding: 0, 
-              left: 0, 
-              right: 0, 
-              top: 0, 
-              bottom: 0,
-              width: '100vw',
-              height: '100vh'
-            }}
-          >
-            <Image
-              src={overlayImages[currentOverlayIndex]}
-              alt={`Opener overlay ${currentOverlayIndex + 1}`}
-              fill
-              className="object-cover"
-              priority={currentOverlayIndex <= 1}
-              sizes="100vw"
+          {overlayImages.map((overlay, index) => (
+            <div
+              key={`overlay-${index}`}
+              className="absolute inset-0"
               style={{ 
-                margin: 0,
-                padding: 0
+                pointerEvents: 'none', 
+                margin: 0, 
+                padding: 0, 
+                left: 0, 
+                right: 0, 
+                top: 0, 
+                bottom: 0,
+                width: '100vw',
+                height: '100vh',
+                opacity: index === currentOverlayIndex ? 1 : 0,
+                visibility: index === currentOverlayIndex ? 'visible' : 'hidden',
+                transition: 'none'
               }}
-            />
-          </div>
+            >
+              <Image
+                src={overlay}
+                alt={`Opener overlay ${index + 1}`}
+                fill
+                className="object-cover"
+                priority={index <= 1}
+                sizes="100vw"
+                unoptimized
+                style={{ 
+                  margin: 0,
+                  padding: 0
+                }}
+              />
+            </div>
+          ))}
         </div>
       )}
 

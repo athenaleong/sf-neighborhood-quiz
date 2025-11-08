@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import questionsData from '../data/questions.json';
 
 interface Question {
@@ -68,6 +69,7 @@ function Question0Overlay({ onComplete, onUpdate }: { onComplete: () => void; on
 }
 
 export default function Quiz() {
+  const router = useRouter();
   const [questions] = useState<QuestionsData>(questionsData as QuestionsData);
   
   // Always start with default values to match server render
@@ -135,9 +137,9 @@ export default function Quiz() {
     } else if (currentQuestionNum < TOTAL_QUESTIONS) {
       setCurrentQuestionNum(currentQuestionNum + 1);
     } else {
-      // Quiz completed - you can navigate to results page here
+      // Quiz completed - navigate to results page
       console.log('Quiz completed!', newAnswers);
-      // TODO: Navigate to results page
+      router.push('/result');
     }
   };
 

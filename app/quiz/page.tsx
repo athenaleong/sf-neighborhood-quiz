@@ -971,9 +971,9 @@ export default function Quiz() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden bg-[#E6E1C9] md:bg-black">
+    <div className="w-full h-screen flex flex-col overflow-hidden bg-[#E6E1C9] md:bg-[#d9d3b6]">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
-      <div className="w-full h-full max-w-sm mx-auto flex flex-col overflow-y-auto" style={{ backgroundColor: '#E6E1C9' }}>
+      <div className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto" style={{ backgroundColor: '#E6E1C9' }}>
         {/* Header with back and retry icons */}
         <div className="w-full flex justify-between items-center px-6 pt-2 pb-2">
           <button

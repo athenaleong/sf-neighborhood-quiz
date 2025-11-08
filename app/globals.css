@@ -3,6 +3,21 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Safe area insets - default to 0 for browsers that don't support */
+  --sat: 0px; /* safe-area-top */
+  --sar: 0px; /* safe-area-right */
+  --sab: 0px; /* safe-area-bottom */
+  --sal: 0px; /* safe-area-left */
+}
+
+/* Use the values when supported */
+@supports (padding: max(0px)) {
+  :root {
+    --sat: max(env(safe-area-inset-top), 0px);
+    --sar: max(env(safe-area-inset-right), 0px);
+    --sab: max(env(safe-area-inset-bottom), 0px);
+    --sal: max(env(safe-area-inset-left), 0px);
+  }
 }
 
 @theme inline {

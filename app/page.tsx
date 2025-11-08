@@ -69,7 +69,8 @@ export default function Home() {
         top: 0, 
         bottom: 0,
         width: '100vw',
-        height: '100vh',
+        height: '100dvh',
+        minHeight: '100dvh',
         position: 'fixed'
       }}
     >
@@ -84,7 +85,8 @@ export default function Home() {
           top: 0, 
           bottom: 0, 
           width: '100vw', 
-          height: '100vh',
+          height: '100dvh',
+          minHeight: '100dvh',
           zIndex: 1
         }}
       >
@@ -106,17 +108,18 @@ export default function Home() {
       {imagesLoaded && (
         <div 
           className="absolute inset-0" 
-          style={{ 
-            margin: 0, 
-            padding: 0, 
-            left: 0, 
-            right: 0, 
-            top: 0, 
-            bottom: 0, 
-            width: '100vw', 
-            height: '100vh',
-            zIndex: 2
-          }}
+        style={{ 
+          margin: 0, 
+          padding: 0, 
+          left: 0, 
+          right: 0, 
+          top: 0, 
+          bottom: 0, 
+          width: '100vw', 
+          height: '100dvh',
+          minHeight: '100dvh',
+          zIndex: 2
+        }}
         >
           {overlayImages.map((overlay, index) => (
             <div
@@ -131,7 +134,8 @@ export default function Home() {
                 top: 0, 
                 bottom: 0,
                 width: '100vw',
-                height: '100vh',
+                height: '100dvh',
+                minHeight: '100dvh',
                 opacity: index === currentOverlayIndex ? 1 : 0,
                 visibility: index === currentOverlayIndex ? 'visible' : 'hidden',
                 transition: 'none'
@@ -156,7 +160,16 @@ export default function Home() {
       )}
 
       {/* Start button - overlay on top */}
-      <div className="absolute bottom-0 left-0 right-0 w-full px-6 pb-8 z-10">
+      <div 
+        className="absolute left-0 right-0 z-10"
+        style={{
+          bottom: `calc(var(--sab) + 2rem)`,
+          paddingLeft: `max(1.5rem, var(--sal))`,
+          paddingRight: `max(1.5rem, var(--sar))`,
+          width: '100%',
+          boxSizing: 'border-box'
+        }}
+      >
         <button
           onClick={handleStart}
           className="w-full bg-black text-white rounded-lg px-6 py-4 text-lg font-medium transition-all duration-200 hover:bg-zinc-800 active:scale-95"

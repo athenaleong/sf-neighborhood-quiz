@@ -63,7 +63,7 @@ export default function Home() {
 
   return (
     <div 
-      className="absolute inset-0 w-full h-full overflow-hidden bg-white" 
+      className="absolute inset-0 w-full h-full overflow-hidden bg-white md:bg-[#d7f0f7] flex justify-center" 
       style={{ 
         margin: 0, 
         padding: 0, 
@@ -77,192 +77,195 @@ export default function Home() {
         position: 'fixed'
       }}
     >
-      {/* Base image - always visible */}
-      <div 
-        className="absolute inset-0" 
-        style={{ 
-          margin: 0, 
-          padding: 0, 
-          left: 0, 
-          right: 0, 
-          top: 0, 
-          bottom: 0, 
-          width: '100vw', 
-          height: '100dvh',
-          minHeight: '100dvh',
-          zIndex: 1
-        }}
-      >
-        <Image
-          src={baseImage}
-          alt="Opener base"
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-          style={{ 
-            margin: 0,
-            padding: 0
-          }}
-        />
-      </div>
-
-      {/* Question image - positioned 10% from top */}
-      {imagesLoaded && (
-        <motion.div 
-          className="absolute left-0 right-0 flex justify-center"
-          style={{
-            top: '5%',
-            zIndex: 3,
-            width: '100%',
-            paddingLeft: `max(1.5rem, var(--sal))`,
-            paddingRight: `max(1.5rem, var(--sar))`,
-            boxSizing: 'border-box'
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ 
-            opacity: 1,
-            rotate: [0, -2, 2, -2, 0]
-          }}
-          transition={{
-            opacity: {
-              duration: 1,
-              ease: 'easeOut'
-            },
-            rotate: {
-              duration: 3,
-              ease: 'easeInOut',
-              repeat: Infinity,
-              repeatDelay: 0.5
-            }
-          }}
-        >
-          <div
-            className="relative"
-            style={{
-              width: '100%',
-              maxWidth: '90%',
-              aspectRatio: 'auto'
-            }}
-          >
-            <Image
-              src={questionImage}
-              alt="What SF neighborhood are you?"
-              width={800}
-              height={200}
-              className="object-contain w-full h-auto"
-              priority
-              unoptimized
-              style={{
-                margin: 0,
-                padding: 0
-              }}
-            />
-          </div>
-        </motion.div>
-      )}
-
-      {/* Animated overlay images - cycle on top of base */}
-      {imagesLoaded && (
+      {/* Content container with max-width constraint - includes everything */}
+      <div className="w-full h-full max-w-xl mx-auto relative bg-[#d7f0f7]">
+        {/* Base image - always visible */}
         <div 
           className="absolute inset-0" 
-        style={{ 
-          margin: 0, 
-          padding: 0, 
-          left: 0, 
-          right: 0, 
-          top: 0, 
-          bottom: 0, 
-          width: '100vw', 
-          height: '100dvh',
-          minHeight: '100dvh',
-          zIndex: 2
-        }}
+          style={{ 
+            margin: 0, 
+            padding: 0, 
+            left: 0, 
+            right: 0, 
+            top: 0, 
+            bottom: 0, 
+            width: '100%', 
+            height: '100%',
+            minHeight: '100dvh',
+            zIndex: 1
+          }}
         >
-          {overlayImages.map((overlay, index) => (
+          <Image
+            src={baseImage}
+            alt="Opener base"
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 640px) 100vw, 576px"
+            style={{ 
+              margin: 0,
+              padding: 0
+            }}
+          />
+        </div>
+
+        {/* Animated overlay images - cycle on top of base */}
+        {imagesLoaded && (
+          <div 
+            className="absolute inset-0" 
+            style={{ 
+              margin: 0, 
+              padding: 0, 
+              left: 0, 
+              right: 0, 
+              top: 0, 
+              bottom: 0, 
+              width: '100%', 
+              height: '100%',
+              minHeight: '100dvh',
+              zIndex: 2
+            }}
+          >
+            {overlayImages.map((overlay, index) => (
+              <div
+                key={`overlay-${index}`}
+                className="absolute inset-0"
+                style={{ 
+                  pointerEvents: 'none', 
+                  margin: 0, 
+                  padding: 0, 
+                  left: 0, 
+                  right: 0, 
+                  top: 0, 
+                  bottom: 0,
+                  width: '100%',
+                  height: '100%',
+                  minHeight: '100dvh',
+                  opacity: index === currentOverlayIndex ? 1 : 0,
+                  visibility: index === currentOverlayIndex ? 'visible' : 'hidden',
+                  transition: 'none'
+                }}
+              >
+                <Image
+                  src={overlay}
+                  alt={`Opener overlay ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  priority={index <= 1}
+                  sizes="(max-width: 640px) 100vw, 576px"
+                  unoptimized
+                  style={{ 
+                    margin: 0,
+                    padding: 0
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Question image - positioned 10% from top */}
+        {imagesLoaded && (
+          <motion.div 
+            className="absolute left-0 right-0 flex justify-center"
+            style={{
+              top: '5%',
+              zIndex: 3,
+              width: '100%',
+              paddingLeft: `max(1.5rem, var(--sal))`,
+              paddingRight: `max(1.5rem, var(--sar))`,
+              boxSizing: 'border-box'
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: 1,
+              rotate: [0, -2, 2, -2, 0]
+            }}
+            transition={{
+              opacity: {
+                duration: 1,
+                ease: 'easeOut'
+              },
+              rotate: {
+                duration: 3,
+                ease: 'easeInOut',
+                repeat: Infinity,
+                repeatDelay: 0.5
+              }
+            }}
+          >
             <div
-              key={`overlay-${index}`}
-              className="absolute inset-0"
-              style={{ 
-                pointerEvents: 'none', 
-                margin: 0, 
-                padding: 0, 
-                left: 0, 
-                right: 0, 
-                top: 0, 
-                bottom: 0,
-                width: '100vw',
-                height: '100dvh',
-                minHeight: '100dvh',
-                opacity: index === currentOverlayIndex ? 1 : 0,
-                visibility: index === currentOverlayIndex ? 'visible' : 'hidden',
-                transition: 'none'
+              className="relative"
+              style={{
+                width: '100%',
+                maxWidth: '90%',
+                aspectRatio: 'auto'
               }}
             >
               <Image
-                src={overlay}
-                alt={`Opener overlay ${index + 1}`}
-                fill
-                className="object-cover"
-                priority={index <= 1}
-                sizes="100vw"
+                src={questionImage}
+                alt="What SF neighborhood are you?"
+                width={800}
+                height={200}
+                className="object-contain w-full h-auto"
+                priority
                 unoptimized
-                style={{ 
+                style={{
                   margin: 0,
                   padding: 0
                 }}
               />
             </div>
-          ))}
-        </div>
-      )}
+          </motion.div>
+        )}
 
-      {/* Start button - overlay on top */}
-      {imagesLoaded && (
-        <motion.div 
-          className="absolute left-0 right-0 z-10 flex justify-center"
-          style={{
-            bottom: `calc(5dvh + var(--sab))`,
-            paddingLeft: `max(1.5rem, var(--sal))`,
-            paddingRight: `max(1.5rem, var(--sar))`,
-            width: '100%',
-            boxSizing: 'border-box'
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            duration: 1,
-            ease: 'easeOut',
-            delay: 0.5
-          }}
-        >
-          <button
-            onClick={handleStart}
-            className="relative transition-all duration-200 active:scale-95 cursor-pointer"
+        {/* Start button - overlay on top */}
+        {imagesLoaded && (
+          <motion.div 
+            className="absolute left-0 right-0 z-10 flex justify-center"
             style={{
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              margin: 0
+              bottom: `calc(5dvh + var(--sab))`,
+              paddingLeft: `max(1.5rem, var(--sal))`,
+              paddingRight: `max(1.5rem, var(--sar))`,
+              width: '100%',
+              boxSizing: 'border-box'
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 1,
+              ease: 'easeOut',
+              delay: 0.5
             }}
           >
-            <Image
-              src={startButtonImage}
-              alt="Start"
-              width={200}
-              height={200}
-              className="object-contain"
-              priority
-              unoptimized
+            <button
+              onClick={handleStart}
+              className="relative transition-all duration-200 active:scale-95 cursor-pointer"
               style={{
-                margin: 0,
+                background: 'transparent',
+                border: 'none',
                 padding: 0,
-                display: 'block'
+                margin: 0
               }}
-            />
-          </button>
-        </motion.div>
-      )}
+            >
+              <Image
+                src={startButtonImage}
+                alt="Start"
+                width={200}
+                height={200}
+                className="object-contain"
+                priority
+                unoptimized
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  display: 'block'
+                }}
+              />
+            </button>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }

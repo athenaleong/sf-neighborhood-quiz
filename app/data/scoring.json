@@ -1,0 +1,117 @@
+{
+  "neighborhoods": {
+    "chinatown": {
+      "name": "Chinatown",
+      "image": "/result/chinatown.PNG"
+    },
+    "northbeach": {
+      "name": "North Beach",
+      "image": "/result/northbeach.PNG"
+    },
+    "castro": {
+      "name": "Castro",
+      "image": "/result/castro.PNG"
+    },
+    "presidio": {
+      "name": "Presidio",
+      "image": "/result/presidio.PNG"
+    },
+    "richmond": {
+      "name": "Richmond",
+      "image": "/result/richmond.PNG"
+    },
+    "tenderloin": {
+      "name": "Tenderloin",
+      "image": "/result/tenderloin.PNG"
+    },
+    "marina": {
+      "name": "Marina",
+      "image": "/result/marina.PNG"
+    },
+    "haight": {
+      "name": "Haight",
+      "image": "/result/haight.PNG"
+    },
+    "mission": {
+      "name": "Mission",
+      "image": "/result/mission.PNG"
+    },
+    "fidi": {
+      "name": "FiDi",
+      "image": "/result/fidi.PNG"
+    }
+  },
+  "scores": {
+    "1": {
+      "0": { "chinatown": 0, "northbeach": 1, "castro": 1, "presidio": 1, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 1, "tenderloin": 0, "marina": 1, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 1 }
+    },
+    "2": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 1, "presidio": 1, "richmond": 1, "tenderloin": 0, "marina": 0, "haight": 1, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 1, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 1, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 1, "haight": 0, "mission": 0, "fidi": 1 }
+    },
+    "3": {
+      "0": { "chinatown": 1, "northbeach": 1, "castro": 0, "presidio": 1, "richmond": 0, "tenderloin": 0, "marina": 1, "haight": 1, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 1, "presidio": 0, "richmond": 1, "tenderloin": 0, "marina": 0, "haight": 1, "mission": 1, "fidi": 0 },
+      "3": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 1 }
+    },
+    "4": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 1 },
+      "1": { "chinatown": 2, "northbeach": 0, "castro": 1, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 1, "tenderloin": 0, "marina": 1, "haight": 1, "mission": 0, "fidi": 0 }
+    },
+    "5": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 1, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 1, "mission": 1, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 1, "castro": 0, "presidio": 0, "richmond": 1, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 1, "northbeach": 0, "castro": 1, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 1, "haight": 0, "mission": 0, "fidi": 0 }
+    },
+    "6": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 1, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 1, "mission": 1, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 1, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 1, "northbeach": 1, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 }
+    },
+    "7": {
+      "0": { "chinatown": 0, "northbeach": 1, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 1, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 1, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 1, "richmond": 1, "tenderloin": 0, "marina": 0, "haight": 1, "mission": 1, "fidi": 0 }
+    },
+    "8": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 1, "richmond": 1, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 1, "northbeach": 1, "castro": 1, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 1 }
+    },
+    "9": {
+      "0": { "chinatown": 2, "northbeach": 2, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 2, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 2, "haight": 0, "mission": 0, "fidi": 0 },
+      "3": { "chinatown": 0, "northbeach": 0, "castro": 2, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 2, "fidi": 0 },
+      "4": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 2 }
+    },
+    "10": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 1, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 1, "mission": 1, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 1, "tenderloin": 0, "marina": 1, "haight": 0, "mission": 0, "fidi": 1 }
+    },
+    "11": {
+      "0": { "chinatown": 1, "northbeach": 1, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 1, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 1, "haight": 1, "mission": 1, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 2, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "3": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 1 }
+    },
+    "12": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 1, "richmond": 1, "tenderloin": 0, "marina": 0, "haight": 1, "mission": 1, "fidi": 0 },
+      "1": { "chinatown": 1, "northbeach": 0, "castro": 1, "presidio": 0, "richmond": 0, "tenderloin": 1, "marina": 0, "haight": 0, "mission": 0, "fidi": 1 }
+    },
+    "13": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "1": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 },
+      "2": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 0 }
+    },
+    "14": {
+      "0": { "chinatown": 0, "northbeach": 0, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 1, "haight": 1, "mission": 1, "fidi": 0 },
+      "1": { "chinatown": 1, "northbeach": 1, "castro": 0, "presidio": 0, "richmond": 0, "tenderloin": 0, "marina": 0, "haight": 0, "mission": 0, "fidi": 1 }
+    }
+  }
+}

@@ -13,8 +13,8 @@
     "question": "You walk up the hill, searching for clues, and find a mysterious flyer that reads: \"seeking adventure? text this number.\" What do you do?",
     "options": [
       "Obviously text the number immediately.",
-      "Think it's suspicious…some sort of phishing scam perhaps.",
-      "Investigate nearby poles to see if there's more flyers."
+      "Think it's suspicious…some sorta scientology scam perhaps.",
+      "Tear it down because <i>actually the posting does not follow regulations in article 5.6 of the Public Works Code</i>."
     ]
   },
   "2": {
@@ -30,9 +30,9 @@
   "3": {
     "image": "/uncropped/3.png",
     "size": "large",
-    "question": "Suddenly, you spot a man in a suit. Is that Daniel Lurie, mayor of San Francisco? He reminds you of your father. Professional, distant. Surely he'd know what to do. You start running after Daniel, but he disappears into a waymo.",
+    "question": "Suddenly, you spot a man in a suit. Is that mayor Daniel Lurie? He reminds you of your father. Professional, distant. Surely he’d know what to do. You run after Daniel, but he disappears into a waymo.",
     "options": [
-      "Run after Daniel on foot",
+      "Pursue Daniel on foot",
       "Hop on a BayWheels bike to chase him",
       "Check if there's a bus nearby. You sure do love the MUNI.",
       "Order your own waymo - no emergency is too urgent to not travel in style."
@@ -41,7 +41,7 @@
   "4": {
     "image": "/uncropped/4.png",
     "size": "large",
-    "question": "Daniel's waymo zips through the streets of San Francisco, and you try your best to keep up. But Big Bus trundles through, cutting you off. You yell angrily, but by the time Big Bus passes, you've lost sight of Daniel.",
+    "question": "Daniel’s waymo zips through the streets, and you try to keep up. But Big Bus trundles through, cutting you off. By the time Big Bus passes, you’ve lost sight of Daniel.",
     "options": [
       "You drop to your knees and scream, shaking your fist at the sky.",
       "You growl: \"daddy is not happy.\"",
@@ -51,7 +51,7 @@
   "5": {
     "image": "/uncropped/5.png",
     "size": "large",
-    "question": "Dejected, you carry onwards on foot. You're now on a bustling street, red paper lanterns dancing in the breeze, and merchants shouting their wares. One catches your eye, an elderly man sitting quietly, a few steps below the sidewalk. He beckons you closer.",
+    "question": "Dejected, you carry onwards on foot. You’re now on a bustling street, red paper lanterns dancing in the breeze. An elderly man catches your eye. He beckons you closer.",
     "options": [
       "Excitedly approach the mysterious old man.",
       "Cautiously approach the mysterious old man.",
@@ -61,7 +61,7 @@
   "6": {
     "image": "/uncropped/6.png",
     "size": "medium",
-    "question": "The man hands you a cup of tea. You realize you're parched, and quickly gulp it down kinda rudely. He pokes the leaves left behind, and decrees you will find the answers you seek by continuing north. You think to yourself:",
+    "question": "The man hands you a cup of tea, and you quickly gulp it down kinda rudely. He pokes the leaves left, and decrees you will find your answers by continuing north. You think:",
     "options": [
       "\"Wow, I'm so grateful for the wisdom of my elders.\"",
       "\"Ugh, I gotta keep walking?? I wanna go home :(\"",
@@ -96,9 +96,7 @@
       "Cigarette-themed art show",
       "Railroad museum",
       "Big Sport",
-      "Mathematics debate",
-      "Philosophy saloon on The Merits of War",
-      "Greasy Dave's All You Can Eat Buffett",
+      "Competitive friend-making",
       "Hackathon to make the best ChatGPT wrapper"
     ]
   },
@@ -114,7 +112,7 @@
   "11": {
     "image": "/cropped/11.png",
     "size": "large",
-    "question": "You start sprinting, but as you draw closer to the water, you're swarmed by a crowd of runners, sweeping you along to a grassy field. Then they all start stretching. One face looks familiar. Wait, isn't that your…",
+    "question": "You start sprinting, and are swarmed by a crowd of runners, sweeping you along to a grassy field. One face looks familiar. Wait, isn’t that your…",
     "options": [
       "wonderful friend!",
       "lovely partner",
@@ -134,7 +132,7 @@
   "13": {
     "image": "/cropped/13.png",
     "size": "large",
-    "question": "They suggest retracing your steps to figure out what happened. They remind you that you were on Haight Street yesterday, so you hop on a bus, then another bus, then a cable car, then a third bus, and finally reach Haight. As you take in the musky, pungent smells, you spot a candy store and decide you deserve a little treat for all your troubles.",
+    "question": "They suggest retracing your steps and remind you that you were on Haight yesterday. So you hop on a bus, another bus, the cable car, a third bus, and reach Haight. You spot a candy store and decide you deserve a little treat for all your troubles.",
     "options": [
       "Ooh, some gummies would be nice.",
       "What would be nice is some gummies.",
@@ -144,7 +142,7 @@
   "14": {
     "image": "/uncropped/Untitled_Artwork 2.png",
     "size": "large",
-    "question": "You continue trekking along, and eventually reach Dolores Park as the sun is beginning to set. It's a beautiful view, so you decide to take a break and sprawl on the grass, chewing gummies. Tuckered out from the day's activities, you doze off…Then you suddenly wake on a park on a hill, dazed and confused.",
+    "question": "You continue trekking, and reach Dolores Park as the sun is beginning to set. It’s beautiful, so you sprawl on the grass, chewing gummies. Tuckered out, you doze off…Then you suddenly wake on a park on a hill, dazed and confused.",
     "options": [
       "Woah…who am I…how did I get here…",
       "Oh f*ck, not this again…"

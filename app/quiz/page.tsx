@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import questionsData from '../data/questions.json';
+import scoringData from '../data/scoring.json';
 
 interface Question {
   image: string;
@@ -72,9 +73,19 @@ export default function Quiz() {
   const router = useRouter();
   const [questions] = useState<QuestionsData>(questionsData as QuestionsData);
   
+  // Initialize scores for each neighborhood
+  const initializeScores = () => {
+    const scores: { [key: string]: number } = {};
+    Object.keys(scoringData.neighborhoods).forEach(neighborhood => {
+      scores[neighborhood] = 0;
+    });
+    return scores;
+  };
+  
   // Always start with default values to match server render
   const [currentQuestionNum, setCurrentQuestionNum] = useState<number>(0);
   const [answers, setAnswers] = useState<number[]>(new Array(TOTAL_QUESTIONS).fill(-1));
+  const [scores, setScores] = useState<{ [key: string]: number }>(initializeScores());
 
   // Restore from localStorage after component mounts (client-side only)
   // This effect runs only on the client after hydration, preventing hydration mismatches
@@ -122,11 +133,48 @@ export default function Quiz() {
     }
   }, [answers]);
 
+  // Enable scrolling by overriding body/html overflow styles
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyHeight = document.body.style.height;
+    const originalHtmlHeight = document.documentElement.style.height;
+    
+    // Enable scrolling
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+    document.documentElement.style.height = 'auto';
+    
+    // Cleanup: restore original styles when component unmounts
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.height = originalBodyHeight;
+      document.documentElement.style.height = originalHtmlHeight;
+    };
+  }, []);
+
   const handleOptionClick = (optionIndex: number) => {
     // Save the answer
     const newAnswers = [...answers];
     if (currentQuestionNum > 0) {
-    newAnswers[currentQuestionNum - 1] = optionIndex;
+      newAnswers[currentQuestionNum - 1] = optionIndex;
+      
+      // Add scores for this answer
+      const questionKey = currentQuestionNum.toString();
+      const optionKey = optionIndex.toString();
+      
+      if (scoringData.scores[questionKey] && scoringData.scores[questionKey][optionKey]) {
+        const points = scoringData.scores[questionKey][optionKey];
+        setScores(prevScores => {
+          const newScores = { ...prevScores };
+          Object.keys(points).forEach(neighborhood => {
+            newScores[neighborhood] = (newScores[neighborhood] || 0) + points[neighborhood];
+          });
+          return newScores;
+        });
+      }
     }
     setAnswers(newAnswers);
 
@@ -137,9 +185,84 @@ export default function Quiz() {
     } else if (currentQuestionNum < TOTAL_QUESTIONS) {
       setCurrentQuestionNum(currentQuestionNum + 1);
     } else {
-      // Quiz completed - navigate to results page
-      console.log('Quiz completed!', newAnswers);
-      router.push('/result');
+      // Quiz completed - calculate winning neighborhood from all answers
+      // Recalculate scores from scratch to ensure accuracy
+      const finalScores = initializeScores();
+      
+      // Update newAnswers to include the current answer
+      newAnswers[currentQuestionNum - 1] = optionIndex;
+      
+      // Calculate scores for all answers (questions 1-14)
+      console.log('Starting score calculation with answers:', newAnswers);
+      for (let q = 1; q <= TOTAL_QUESTIONS; q++) {
+        const questionKey = q.toString();
+        const answerIndex = newAnswers[q - 1];
+        
+        console.log(`Question ${q}: answerIndex=${answerIndex}, questionKey="${questionKey}"`);
+        
+        if (answerIndex >= 0) {
+          const optionKey = answerIndex.toString();
+          console.log(`  Checking scoringData.scores["${questionKey}"]["${optionKey}"]`);
+          
+          if (scoringData.scores[questionKey] && scoringData.scores[questionKey][optionKey]) {
+            const points = scoringData.scores[questionKey][optionKey];
+            console.log(`  Found points:`, points);
+            Object.keys(points).forEach(neighborhood => {
+              const pointsToAdd = points[neighborhood];
+              if (pointsToAdd > 0) {
+                finalScores[neighborhood] = (finalScores[neighborhood] || 0) + pointsToAdd;
+                console.log(`  Added ${pointsToAdd} points to ${neighborhood}`);
+              }
+            });
+          } else {
+            console.log(`  No scoring data found for question ${q}, option ${answerIndex}`);
+          }
+        } else {
+          console.log(`  Question ${q} not answered (answerIndex: ${answerIndex})`);
+        }
+      }
+      
+      // Find the neighborhood with the highest score
+      let winningNeighborhood: string | null = null;
+      let maxScore = -1;
+      const tiedNeighborhoods: string[] = [];
+      
+      // Find the highest score
+      Object.keys(finalScores).forEach(neighborhood => {
+        const score = finalScores[neighborhood] || 0;
+        if (score > maxScore) {
+          maxScore = score;
+          winningNeighborhood = neighborhood;
+          tiedNeighborhoods.length = 0; // Clear ties
+          tiedNeighborhoods.push(neighborhood);
+        } else if (score === maxScore && maxScore >= 0) {
+          tiedNeighborhoods.push(neighborhood);
+        }
+      });
+      
+      // Handle ties - if multiple neighborhoods have the same highest score, pick randomly
+      if (tiedNeighborhoods.length > 1) {
+        winningNeighborhood = tiedNeighborhoods[Math.floor(Math.random() * tiedNeighborhoods.length)];
+        console.log(`Tie detected! ${tiedNeighborhoods.length} neighborhoods tied with score ${maxScore}. Randomly selected: ${winningNeighborhood}`);
+      }
+      
+      // Fallback: if no scores were calculated (all 0), default to first neighborhood alphabetically
+      if (!winningNeighborhood || maxScore < 0) {
+        winningNeighborhood = Object.keys(scoringData.neighborhoods)[0];
+        console.warn('No scores calculated or all scores are 0. Using default:', winningNeighborhood);
+      }
+      
+      console.log('Quiz completed!', { 
+        answers: newAnswers, 
+        scores: finalScores, 
+        winner: winningNeighborhood,
+        maxScore: maxScore,
+        tiedNeighborhoods: tiedNeighborhoods.length > 1 ? tiedNeighborhoods : undefined
+      });
+      
+      // Save result to localStorage and navigate
+      localStorage.setItem('quizResult', winningNeighborhood);
+      router.push(`/result?neighborhood=${winningNeighborhood}`);
     }
   };
 
@@ -973,9 +1096,9 @@ export default function Quiz() {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden bg-[#E6E1C9] md:bg-[#d9d3b6]">
+    <div className="w-full min-h-screen flex flex-col bg-[#E6E1C9] md:bg-[#d9d3b6]">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
-      <div className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto" style={{ backgroundColor: '#E6E1C9' }}>
+      <div className="w-full max-w-xl mx-auto flex flex-col" style={{ backgroundColor: '#E6E1C9', minHeight: '100vh' }}>
         {/* Header with back and retry icons */}
         <div className="w-full flex justify-between items-center px-6 pt-2 pb-2">
           <button
@@ -1026,7 +1149,7 @@ export default function Quiz() {
           </button>
         </div>
         {/* Question template - vertical layout */}
-        <div className="flex flex-col items-center pb-8 flex-1" style={{ position: 'relative' }}>
+        <div className="flex flex-col items-center pb-8" style={{ position: 'relative', minHeight: 'fit-content' }}>
 
           {/* Image on top - with per-question animations */}
           {renderAnimatedImage()}
@@ -1070,9 +1193,11 @@ export default function Quiz() {
                   }
                 }}
               >
-                <h2 className="text-md font-md text-black leading-tight" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
-                {currentQuestion.question}
-              </h2>
+                <h2 
+                  className="text-md font-md text-black leading-tight" 
+                  style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+                  dangerouslySetInnerHTML={{ __html: currentQuestion.question }}
+                />
               </motion.div>
             </div>
           )}
@@ -1094,9 +1219,8 @@ export default function Quiz() {
                     currentQuestion.options.length > 4 ? 'py-1' : 'py-1'
                 }`}
                   style={{ fontFamily: "'Pixelify Sans', sans-serif", transform: 'rotate(0deg)' }}
-              >
-                {option}
-              </button>
+                  dangerouslySetInnerHTML={{ __html: option }}
+              />
             ))}
             </motion.div>
           )}

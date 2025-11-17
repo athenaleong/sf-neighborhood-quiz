@@ -17,6 +17,26 @@ interface QuestionsData {
   [key: string]: Question;
 }
 
+interface NeighborhoodScores {
+  [neighborhood: string]: number;
+}
+
+interface QuestionScores {
+  [optionKey: string]: NeighborhoodScores;
+}
+
+interface ScoringData {
+  neighborhoods: {
+    [key: string]: {
+      name: string;
+      image: string;
+    };
+  };
+  scores: {
+    [questionKey: string]: QuestionScores;
+  };
+}
+
 const TOTAL_QUESTIONS = 14;
 
 // Component for question 0 overlay with natural blinking/opening effect
@@ -72,11 +92,12 @@ function Question0Overlay({ onComplete, onUpdate }: { onComplete: () => void; on
 export default function Quiz() {
   const router = useRouter();
   const [questions] = useState<QuestionsData>(questionsData as QuestionsData);
+  const typedScoringData = scoringData as ScoringData;
   
   // Initialize scores for each neighborhood
   const initializeScores = () => {
     const scores: { [key: string]: number } = {};
-    Object.keys(scoringData.neighborhoods).forEach(neighborhood => {
+    Object.keys(typedScoringData.neighborhoods).forEach(neighborhood => {
       scores[neighborhood] = 0;
     });
     return scores;
@@ -165,8 +186,8 @@ export default function Quiz() {
       const questionKey = currentQuestionNum.toString();
       const optionKey = optionIndex.toString();
       
-      if (scoringData.scores[questionKey] && scoringData.scores[questionKey][optionKey]) {
-        const points = scoringData.scores[questionKey][optionKey];
+      if (typedScoringData.scores[questionKey] && typedScoringData.scores[questionKey][optionKey]) {
+        const points = typedScoringData.scores[questionKey][optionKey];
         setScores(prevScores => {
           const newScores = { ...prevScores };
           Object.keys(points).forEach(neighborhood => {
@@ -202,10 +223,10 @@ export default function Quiz() {
         
         if (answerIndex >= 0) {
           const optionKey = answerIndex.toString();
-          console.log(`  Checking scoringData.scores["${questionKey}"]["${optionKey}"]`);
+          console.log(`  Checking typedScoringData.scores["${questionKey}"]["${optionKey}"]`);
           
-          if (scoringData.scores[questionKey] && scoringData.scores[questionKey][optionKey]) {
-            const points = scoringData.scores[questionKey][optionKey];
+          if (typedScoringData.scores[questionKey] && typedScoringData.scores[questionKey][optionKey]) {
+            const points = typedScoringData.scores[questionKey][optionKey];
             console.log(`  Found points:`, points);
             Object.keys(points).forEach(neighborhood => {
               const pointsToAdd = points[neighborhood];
@@ -248,7 +269,7 @@ export default function Quiz() {
       
       // Fallback: if no scores were calculated (all 0), default to first neighborhood alphabetically
       if (!winningNeighborhood || maxScore < 0) {
-        winningNeighborhood = Object.keys(scoringData.neighborhoods)[0];
+        winningNeighborhood = Object.keys(typedScoringData.neighborhoods)[0];
         console.warn('No scores calculated or all scores are 0. Using default:', winningNeighborhood);
       }
       

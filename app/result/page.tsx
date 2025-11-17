@@ -3,38 +3,51 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useState, Suspense, useMemo } from 'react';
 import scoringData from '../data/scoring.json';
 
-export default function Result() {
+interface NeighborhoodData {
+  name: string;
+  image: string;
+}
+
+interface ScoringData {
+  neighborhoods: {
+    [key: string]: NeighborhoodData;
+  };
+}
+
+function ResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [neighborhood, setNeighborhood] = useState<string>('chinatown');
   
-  useEffect(() => {
-    // Get neighborhood from URL params or localStorage
-    const urlNeighborhood = searchParams.get('neighborhood');
-    const storedNeighborhood = localStorage.getItem('quizResult');
-    const finalNeighborhood = urlNeighborhood || storedNeighborhood || 'chinatown';
-    
-    console.log('Result page - Neighborhood detection:', {
-      urlNeighborhood,
-      storedNeighborhood,
-      finalNeighborhood,
-      availableNeighborhoods: Object.keys(scoringData.neighborhoods)
-    });
-    
-    setNeighborhood(finalNeighborhood);
-  }, [searchParams]);
+  // Get neighborhood directly from URL params or localStorage
+  const urlNeighborhood = searchParams.get('neighborhood');
+  const storedNeighborhood = typeof window !== 'undefined' ? localStorage.getItem('quizResult') : null;
+  const initialNeighborhood = urlNeighborhood || storedNeighborhood || 'chinatown';
+  
+  const [neighborhood] = useState<string>(initialNeighborhood);
+  
+  console.log('Result page - Neighborhood detection:', {
+    urlNeighborhood,
+    storedNeighborhood,
+    neighborhood,
+    availableNeighborhoods: Object.keys(scoringData.neighborhoods)
+  });
   
   // Validate neighborhood exists, fallback to chinatown if not
-  const neighborhoodData = (scoringData.neighborhoods as any)[neighborhood] 
-    ? (scoringData.neighborhoods as any)[neighborhood] 
-    : scoringData.neighborhoods.chinatown;
-  
-  if (!(scoringData.neighborhoods as any)[neighborhood]) {
-    console.warn(`Neighborhood "${neighborhood}" not found in scoring data, using chinatown as fallback`);
-  }
+  const typedScoringData = scoringData as ScoringData;
+  const neighborhoodData = useMemo(() => {
+    const data = typedScoringData.neighborhoods[neighborhood] 
+      ? typedScoringData.neighborhoods[neighborhood] 
+      : typedScoringData.neighborhoods.chinatown;
+    
+    if (!typedScoringData.neighborhoods[neighborhood]) {
+      console.warn(`Neighborhood "${neighborhood}" not found in scoring data, using chinatown as fallback`);
+    }
+    
+    return data;
+  }, [neighborhood, typedScoringData]);
   
   const resultImage = neighborhoodData.image;
   const resultName = neighborhoodData.name;
@@ -155,6 +168,20 @@ export default function Result() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Result() {
+  return (
+    <Suspense fallback={
+      <div className="w-full h-screen flex items-center justify-center bg-[#E6E1C9]">
+        <div className="text-center text-black" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
+          Loading...
+        </div>
+      </div>
+    }>
+      <ResultContent />
+    </Suspense>
   );
 }
 

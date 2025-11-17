@@ -63,7 +63,7 @@ export default function Home() {
 
   return (
     <div 
-      className="absolute inset-0 w-full h-full overflow-hidden bg-white flex justify-center" 
+      className="absolute inset-0 w-full h-full overflow-hidden bg-[#d7f0f7] flex justify-center" 
       style={{ 
         margin: 0, 
         padding: 0, 
@@ -78,7 +78,7 @@ export default function Home() {
       }}
     >
       {/* Content container with max-width constraint - includes everything */}
-      <div className="w-full h-full max-w-xl mx-auto relative bg-white">
+      <div className="w-full h-full max-w-xl mx-auto relative  bg-[#d7f0f7]">
         {/* Base image - always visible */}
         <div 
           className="absolute inset-0" 

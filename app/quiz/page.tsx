@@ -106,7 +106,6 @@ export default function Quiz() {
   // Always start with default values to match server render
   const [currentQuestionNum, setCurrentQuestionNum] = useState<number>(0);
   const [answers, setAnswers] = useState<number[]>(new Array(TOTAL_QUESTIONS).fill(-1));
-  const [scores, setScores] = useState<{ [key: string]: number }>(initializeScores());
 
   // Restore from localStorage after component mounts (client-side only)
   // This effect runs only on the client after hydration, preventing hydration mismatches
@@ -181,21 +180,6 @@ export default function Quiz() {
     const newAnswers = [...answers];
     if (currentQuestionNum > 0) {
       newAnswers[currentQuestionNum - 1] = optionIndex;
-      
-      // Add scores for this answer
-      const questionKey = currentQuestionNum.toString();
-      const optionKey = optionIndex.toString();
-      
-      if (typedScoringData.scores[questionKey] && typedScoringData.scores[questionKey][optionKey]) {
-        const points = typedScoringData.scores[questionKey][optionKey];
-        setScores(prevScores => {
-          const newScores = { ...prevScores };
-          Object.keys(points).forEach(neighborhood => {
-            newScores[neighborhood] = (newScores[neighborhood] || 0) + points[neighborhood];
-          });
-          return newScores;
-        });
-      }
     }
     setAnswers(newAnswers);
 
@@ -210,10 +194,8 @@ export default function Quiz() {
       // Recalculate scores from scratch to ensure accuracy
       const finalScores = initializeScores();
       
-      // Update newAnswers to include the current answer
-      newAnswers[currentQuestionNum - 1] = optionIndex;
-      
       // Calculate scores for all answers (questions 1-14)
+      // newAnswers already has the current answer set from line 182
       console.log('Starting score calculation with answers:', newAnswers);
       for (let q = 1; q <= TOTAL_QUESTIONS; q++) {
         const questionKey = q.toString();

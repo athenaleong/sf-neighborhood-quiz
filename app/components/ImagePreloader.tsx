@@ -97,7 +97,7 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center bg-[#A8D8EA]">
         <NextImage
-          src="/cropped/bridge.gif"
+          src="/cropped/bridge-2.gif"
           alt="Loading"
           width={400}
           height={300}

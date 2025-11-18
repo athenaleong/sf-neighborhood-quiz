@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import questionsData from '../data/questions.json';
 import scoringData from '../data/scoring.json';
 
@@ -38,56 +39,6 @@ interface ScoringData {
 }
 
 const TOTAL_QUESTIONS = 14;
-
-// Component for question 0 overlay with natural blinking/opening effect
-function Question0Overlay({ onComplete, onUpdate }: { onComplete: () => void; onUpdate: (opacity: number) => void }) {
-  const [blurAmount, setBlurAmount] = useState(20);
-  const opacity = useMotionValue(1);
-  const blur = useTransform(opacity, [0, 1], [0, 20]);
-
-  useEffect(() => {
-    const unsubscribeOpacity = opacity.on('change', (latest) => {
-      onUpdate(latest);
-      // Trigger zoom immediately when opacity reaches 0
-      if (latest <= 0) {
-        onComplete();
-      }
-    });
-    const unsubscribeBlur = blur.on('change', (latest) => {
-      setBlurAmount(Math.round(latest));
-    });
-    return () => {
-      unsubscribeOpacity();
-      unsubscribeBlur();
-    };
-  }, [opacity, blur, onUpdate, onComplete]);
-
-  return (
-    <motion.div
-      className="fixed inset-0"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 1)',
-        backdropFilter: `blur(${blurAmount}px)`,
-        WebkitBackdropFilter: `blur(${blurAmount}px)`,
-        zIndex: 50,
-        pointerEvents: 'none'
-      }}
-      initial={{ opacity: 1 }}
-      animate={{ opacity: 0 }}
-      transition={{ 
-        delay: 0.8,
-        duration: 3.0,
-        ease: 'easeOut'
-      }}
-      onUpdate={(latest) => {
-        if (typeof latest === 'object' && 'opacity' in latest) {
-          opacity.set((latest as { opacity: number }).opacity);
-        }
-      }}
-      onAnimationComplete={onComplete}
-    />
-  );
-}
 
 export default function Quiz() {
   const router = useRouter();
@@ -275,19 +226,8 @@ export default function Quiz() {
     }
   };
 
-  const handleRetry = () => {
-    setCurrentQuestionNum(0);
-    setAnswers(new Array(TOTAL_QUESTIONS).fill(-1));
-    localStorage.setItem('currentQuestion', '0');
-    localStorage.setItem('answerArray', JSON.stringify(new Array(TOTAL_QUESTIONS).fill(-1)));
-  };
-
   const currentQuestion = questions[currentQuestionNum.toString()];
   const [shuffleIndex, setShuffleIndex] = useState(0);
-  const [question0VisitKey, setQuestion0VisitKey] = useState(0);
-  const [question0AnimationComplete, setQuestion0AnimationComplete] = useState(false);
-  const [question0BoxVisible, setQuestion0BoxVisible] = useState(false);
-  const [question0OverlayComplete, setQuestion0OverlayComplete] = useState(false);
   const [question3VisitKey, setQuestion3VisitKey] = useState(0);
   const [question4VisitKey, setQuestion4VisitKey] = useState(0);
   const [question5VisitKey, setQuestion5VisitKey] = useState(0);
@@ -321,32 +261,6 @@ export default function Quiz() {
     return null;
   }, [currentQuestionNum]);
 
-  // Track visits to question 0 to re-trigger animation
-  useEffect(() => {
-    if (currentQuestionNum === 0) {
-      // Reset animation complete state
-      const resetTimer = setTimeout(() => {
-        setQuestion0AnimationComplete(false);
-        setQuestion0BoxVisible(false);
-        setQuestion0OverlayComplete(false);
-      }, 0);
-      // Increment visit key to force remount and re-trigger animation
-      const timer = setTimeout(() => {
-        setQuestion0VisitKey((prev) => prev + 1);
-      }, 0);
-      return () => {
-        clearTimeout(resetTimer);
-        clearTimeout(timer);
-      };
-    } else {
-      const timer = setTimeout(() => {
-        setQuestion0AnimationComplete(false);
-        setQuestion0BoxVisible(false);
-        setQuestion0OverlayComplete(false);
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [currentQuestionNum]);
 
   // Track visits to question 3 to re-trigger animation
   useEffect(() => {
@@ -627,80 +541,25 @@ export default function Quiz() {
   // Render animated image based on question number
   const renderAnimatedImage = () => {
     if (currentQuestionNum === 0) {
-      // Question 0: Story opener - waking up effect with dark/blurry overlay, then zoom out
+      // Question 0: Simple fade in
       return (
-        <>
-          {/* Image - visible from start, zoomed in, waiting for overlay to clear */}
-          <motion.div
-            key={`question-0-visit-${question0VisitKey}`}
-            className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent bg-contain bg-center bg-no-repeat"
-            style={{
-              backgroundImage: currentQuestion.image ? `url(${currentQuestion.image})` : 'none',
-              height: '35vh',
-              zIndex: 0,
-              position: 'absolute'
-            }}
-            initial={{ 
-              scale: 1.5,
-              opacity: 1,
-              x: '-50%',
-              y: '-50%',
-              top: '50%',
-              left: '50%'
-            }}
-            animate={question0OverlayComplete ? { 
-              scale: 1,
-              opacity: 1,
-              x: '0%',
-              y: '0%',
-              top: '0%',
-              left: '0%'
-            } : {
-              scale: 1.5,
-              opacity: 1,
-              x: '-50%',
-              y: '-50%',
-              top: '50%',
-              left: '50%'
-            }}
-            transition={question0OverlayComplete ? { 
-              duration: 1.0, 
-              ease: 'easeOut',
-              delay: 0
-            } : {
-              duration: 0
-            }}
-            onAnimationComplete={() => {
-              if (question0OverlayComplete) {
-                setTimeout(() => {
-                  setQuestion0AnimationComplete(true);
-                  // Show question box after image animation completes
-                  setTimeout(() => {
-                    setQuestion0BoxVisible(true);
-                  }, 100);
-                }, 0);
-              }
-            }}
-          >
-            {!currentQuestion.image && (
-              <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                Image Placeholder
-              </div>
-            )}
-          </motion.div>
-          
-          {/* Waking up overlay - dark and blurry to light and clear */}
-          <Question0Overlay
-            key={`question-0-overlay-${question0VisitKey}`}
-            onComplete={() => {
-              setQuestion0OverlayComplete(true);
-            }}
-            onUpdate={() => {
-              // Blur is handled by motion values
-              // Zoom will be triggered immediately when opacity reaches 0 via onComplete
-            }}
-          />
-        </>
+        <motion.div
+          className="w-full -mb-4 rounded-lg overflow-hidden bg-transparent bg-contain bg-center bg-no-repeat"
+          style={{
+            backgroundImage: currentQuestion.image ? `url(${currentQuestion.image})` : 'none',
+            height: '35vh',
+            zIndex: 0
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          {!currentQuestion.image && (
+            <div className="w-full h-full flex items-center justify-center text-zinc-400">
+              Image Placeholder
+            </div>
+          )}
+        </motion.div>
       );
     }
 
@@ -1107,48 +966,35 @@ export default function Quiz() {
           <button
             onClick={handleBack}
             disabled={currentQuestionNum === 0}
-            className={`p-2 rounded-lg transition-all duration-200 ${
+            className={`transition-all duration-200 ${
               currentQuestionNum === 0
-                ? 'opacity-30 cursor-not-allowed'
-                : 'hover:bg-black/10 active:scale-95'
+                ? 'opacity-0 cursor-not-allowed'
+                : 'active:scale-95'
             }`}
             aria-label="Go back"
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-black"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
+            <Image
+              src="/cropped/back-button.png"
+              alt="Back"
+              width={30}
+              height={30}
+              className="w-auto h-auto"
+              priority
+            />
           </button>
           <button
-            onClick={handleRetry}
-            className="p-2 rounded-lg transition-all duration-200 hover:bg-black/10 active:scale-95"
-            aria-label="Retry quiz"
+            onClick={() => router.push('/')}
+            className="transition-all duration-200 active:scale-95"
+            aria-label="Go to home"
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-black"
-            >
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-              <path d="M21 3v5h-5" />
-              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-              <path d="M3 21v-5h5" />
-            </svg>
+            <Image
+              src="/cropped/retry-button.png"
+              alt="Home"
+              width={30}
+              height={30}
+              className="w-auto h-auto"
+              priority
+            />
           </button>
         </div>
         {/* Question template - vertical layout */}
@@ -1156,42 +1002,28 @@ export default function Quiz() {
 
           {/* Image on top - with per-question animations */}
           {renderAnimatedImage()}
-          
-          {/* Spacer for question 0 to account for absolutely positioned image */}
-          {currentQuestionNum === 0 && (
-            <div style={{ height: '35vh', width: '100%' }} />
-          )}
 
           {/* Question text box */}
-          {(currentQuestionNum !== 0 || question0BoxVisible) && (
-            <div className="w-full mb-4 px-2" style={{ position: 'relative', zIndex: 1 }}>
-              <motion.div 
-              className="rounded-lg p-12 text-center bg-center bg-no-repeat"
-              style={{ 
-                backgroundImage: 'url(/cropped/background.png)',
-                backgroundSize: '100% 100%',
-                backgroundColor: 'transparent',
-                minHeight: currentQuestion.size === 'large' 
-                  ? '180px' 
-                  : currentQuestion.size === 'medium' 
-                    ? '150px' 
-                    : '120px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                onAnimationComplete={() => {
-                  // After question box appears, show options
-                  if (currentQuestionNum === 0) {
-                    setTimeout(() => {
-                      setQuestion0AnimationComplete(true);
-                    }, 0);
-                  }
-                }}
-              >
+          <div className="w-full px-2" style={{ position: 'relative', zIndex: 1 }}>
+            <motion.div 
+            className="rounded-lg p-12 text-center bg-center bg-no-repeat"
+            style={{ 
+              backgroundImage: 'url(/cropped/background.png)',
+              backgroundSize: '100% 100%',
+              backgroundColor: 'transparent',
+              minHeight: currentQuestion.size === 'large' 
+                ? '180px' 
+                : currentQuestion.size === 'medium' 
+                  ? '150px' 
+                  : '120px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
                 <h2 
                   className="text-md font-md leading-tight" 
                   style={{ fontFamily: "'FOT-RodinBokutoh', sans-serif", color: '#746664' }}
@@ -1199,28 +1031,26 @@ export default function Quiz() {
                 />
               </motion.div>
             </div>
-          )}
 
           {/* Options */}
-          {(currentQuestionNum !== 0 || question0AnimationComplete) && (
-            <motion.div 
-              className={`w-full flex flex-col flex-1 px-6 ${currentQuestion.options.length > 4 ? 'gap-1' : 'gap-2'}`} 
-              style={{ position: 'relative', zIndex: 1 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: currentQuestionNum === 0 ? 0.5 : 0 }}
-            >
+          <motion.div 
+            className={`w-full flex flex-col flex-1 px-6 ${currentQuestion.options.length > 4 ? 'gap-0' : 'gap-0'}`} 
+            style={{ position: 'relative', zIndex: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             {currentQuestion.options.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleOptionClick(index)}
-                  className={`w-full rounded-lg text-md font-md transition-all duration-200 active:scale-95 flex items-center ${
+                  className={`w-full rounded-lg text-sm font-md transition-all duration-200 active:scale-95 flex items-center ${
                     currentQuestion.options.length > 4 ? 'py-6' : 'py-6'
                 }`}
                   style={{ 
                     fontFamily: "'FOT-Seurat', sans-serif", 
                     transform: 'rotate(0deg)',
-                    backgroundImage: 'url(cropped/bread-4.png)', 
+                    backgroundImage: 'url(cropped/bread.png)', 
                     backgroundSize: '100% 100%',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
@@ -1233,8 +1063,7 @@ export default function Quiz() {
                   dangerouslySetInnerHTML={{ __html: option }}
               />
             ))}
-            </motion.div>
-          )}
+          </motion.div>
         </div>
       </div>
     </div>

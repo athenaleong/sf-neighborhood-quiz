@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useState, Suspense, useMemo } from 'react';
 import scoringData from '../data/scoring.json';
+import ImagePreloader from '../components/ImagePreloader';
 
 interface NeighborhoodData {
   name: string;
@@ -183,15 +184,17 @@ function ResultContent() {
 
 export default function Result() {
   return (
-    <Suspense fallback={
-      <div className="w-full h-screen flex items-center justify-center bg-[#E6E1C9]">
-        <div className="text-center text-black" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
-          Loading...
+    <ImagePreloader>
+      <Suspense fallback={
+        <div className="w-full h-screen flex items-center justify-center bg-[#E6E1C9]">
+          <div className="text-center text-black" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
+            Loading...
+          </div>
         </div>
-      </div>
-    }>
-      <ResultContent />
-    </Suspense>
+      }>
+        <ResultContent />
+      </Suspense>
+    </ImagePreloader>
   );
 }
 

@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import ImagePreloader from './components/ImagePreloader';
 
-export default function Home() {
+function HomeContent() {
   const router = useRouter();
   const [currentOverlayIndex, setCurrentOverlayIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -267,5 +268,13 @@ export default function Home() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <ImagePreloader>
+      <HomeContent />
+    </ImagePreloader>
   );
 }

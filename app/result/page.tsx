@@ -107,28 +107,38 @@ function ResultContent() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden bg-[#E6E1C9] md:bg-[#d9d3b6]">
+    <div className="w-full h-screen flex flex-col overflow-hidden bg-[#d7f0f7] md:bg-[#d7f0f7]">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
-      <div className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto" style={{ backgroundColor: '#E6E1C9' }}>
+      <div className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto" style={{ backgroundColor: '#a8d8ea' }}>
         {/* Header with save and again buttons */}
-        <div className="w-full flex justify-between items-center px-6 pt-2 pb-2">
+        <div className="w-full flex justify-center items-center gap-6 px-6 pt-2 pb-2">
           <button
             onClick={handleSave}
-            className="p-2 rounded-lg transition-all duration-200 hover:bg-black/10 active:scale-95"
+            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle"
             aria-label="Save result"
           >
-            <span className="text-black text-md font-md" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
-              save
-            </span>
+            <Image
+              src="/cropped/save-button.png"
+              alt="Save"
+              width={200}
+              height={100}
+              className="w-full h-auto"
+              priority
+            />
           </button>
           <button
             onClick={handleAgain}
-            className="p-2 rounded-lg transition-all duration-200 hover:bg-black/10 active:scale-95"
+            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle"
             aria-label="Take quiz again"
           >
-            <span className="text-black text-md font-md" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
-              again
-            </span>
+            <Image
+              src="/cropped/again-button.png"
+              alt="Again"
+              width={200}
+              height={100}
+              className="w-full h-auto"
+              priority
+            />
           </button>
         </div>
 

@@ -241,7 +241,7 @@ function HomeContent() {
           >
             <button
               onClick={handleStart}
-              className="relative transition-all duration-200 active:scale-95 cursor-pointer"
+              className="relative transition-all duration-200 active:scale-95 cursor-pointer animate-bounce-subtle"
               style={{
                 background: 'transparent',
                 border: 'none',

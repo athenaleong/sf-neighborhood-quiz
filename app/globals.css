@@ -77,3 +77,12 @@ body {
 .animate-bounce-subtle {
   animation: bounce-subtle 2s infinite;
 }
+
+/* Ensure inline HTML elements stay inline within buttons */
+button i,
+button em,
+button strong,
+button b {
+  display: inline;
+  font-style: italic;
+}

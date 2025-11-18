@@ -1053,7 +1053,7 @@ export default function Quiz() {
               <button
                 key={index}
                 onClick={() => handleOptionClick(index)}
-                  className={`w-full rounded-lg text-sm font-md transition-all duration-200 active:scale-95 flex items-center ${
+                  className={`w-full rounded-lg text-sm font-md transition-all duration-200 active:scale-95 text-left ${
                     currentQuestion.options.length > 4 ? 'py-6' : 'py-6'
                 }`}
                   style={{ 
@@ -1069,7 +1069,7 @@ export default function Quiz() {
                     paddingLeft: '30px',
                     paddingRight: '30px'
                   }}
-                  dangerouslySetInnerHTML={{ __html: option }}
+                  dangerouslySetInnerHTML={{ __html: `<span style="display: inline;">${option}</span>` }}
               />
             ))}
           </motion.div>

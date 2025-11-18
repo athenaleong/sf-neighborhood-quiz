@@ -51,19 +51,19 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
       '/cropped/opener-overlay-2.png',
       '/cropped/opener-overlay-3.png',
       '/cropped/opener-overlay-4.png',
-      // Result images
-      '/result/castro.png',
-      '/result/chinatown.PNG',
-      '/result/fidi.png',
-      '/result/haight.png',
-      '/result/marina.png',
-      '/result/mission.png',
-      '/result/northbeach.png',
-      '/result/presidio.png',
-      '/result/richmond.png',
-      '/result/tenderloin.png',
       '/cropped/save-button.png',
-      '/cropped/again-button.png'
+      '/cropped/again-button.png',
+      // Result images (matching scoring.json - all uppercase .PNG)
+      '/result/castro.PNG',
+      '/result/chinatown.PNG',
+      '/result/fidi.PNG',
+      '/result/haight.PNG',
+      '/result/marina.PNG',
+      '/result/mission.PNG',
+      '/result/northbeach.PNG',
+      '/result/presidio.PNG',
+      '/result/richmond.PNG',
+      '/result/tenderloin.PNG'
     ];
 
     const loadImage = (src: string): Promise<void> => {

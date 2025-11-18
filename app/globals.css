@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'FOT-RodinBokutoh';
+  src: url('/fonts/FOT-RodinBokutoh Pro EB.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FOT-Seurat';
+  src: url('/fonts/FOT-Seurat Pro B.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

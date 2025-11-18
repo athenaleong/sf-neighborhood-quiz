@@ -1092,16 +1092,16 @@ export default function Quiz() {
 
   if (!currentQuestion) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-[#E6E1C9] md:bg-black">
+      <div className="w-full h-screen flex items-center justify-center bg-[#D7F0F7] md:bg-black">
         <div className="text-center text-black">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-[#E6E1C9] md:bg-[#d9d3b6]">
+    <div className="w-full min-h-screen flex flex-col bg-[#A8D8EA] md:bg-[#D7F0F7]">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
-      <div className="w-full max-w-xl mx-auto flex flex-col" style={{ backgroundColor: '#E6E1C9', minHeight: '100vh' }}>
+      <div className="w-full max-w-xl mx-auto flex flex-col" style={{ backgroundColor: '#A8D8EA', minHeight: '100vh' }}>
         {/* Header with back and retry icons */}
         <div className="w-full flex justify-between items-center px-6 pt-2 pb-2">
           <button
@@ -1166,15 +1166,11 @@ export default function Quiz() {
           {(currentQuestionNum !== 0 || question0BoxVisible) && (
             <div className="w-full mb-4 px-2" style={{ position: 'relative', zIndex: 1 }}>
               <motion.div 
-              className="rounded-lg p-6 text-center bg-center bg-no-repeat"
+              className="rounded-lg p-12 text-center bg-center bg-no-repeat"
               style={{ 
-                backgroundImage: currentQuestion.size === 'large' 
-                  ? 'url(/text-box-large.png)' 
-                  : currentQuestion.size === 'medium'
-                    ? 'url(/text-box-medium.png)'
-                    : 'url(/text-box.png)',
-                backgroundSize: '100% auto',
-                backgroundColor: 'white',
+                backgroundImage: 'url(/cropped/background.png)',
+                backgroundSize: '100% 100%',
+                backgroundColor: 'transparent',
                 minHeight: currentQuestion.size === 'large' 
                   ? '180px' 
                   : currentQuestion.size === 'medium' 
@@ -1197,8 +1193,8 @@ export default function Quiz() {
                 }}
               >
                 <h2 
-                  className="text-md font-md text-black leading-tight" 
-                  style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+                  className="text-md font-md leading-tight" 
+                  style={{ fontFamily: "'FOT-RodinBokutoh', sans-serif", color: '#746664' }}
                   dangerouslySetInnerHTML={{ __html: currentQuestion.question }}
                 />
               </motion.div>
@@ -1208,7 +1204,7 @@ export default function Quiz() {
           {/* Options */}
           {(currentQuestionNum !== 0 || question0AnimationComplete) && (
             <motion.div 
-              className={`w-full flex flex-col flex-1 px-6 ${currentQuestion.options.length > 4 ? 'gap-2' : 'gap-4'}`} 
+              className={`w-full flex flex-col flex-1 px-6 ${currentQuestion.options.length > 4 ? 'gap-1' : 'gap-2'}`} 
               style={{ position: 'relative', zIndex: 1 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1218,10 +1214,22 @@ export default function Quiz() {
               <button
                 key={index}
                 onClick={() => handleOptionClick(index)}
-                  className={`w-full bg-white text-black rounded-lg px-4 text-md font-md transition-all duration-200 hover:bg-gray-100 active:scale-95 text-left shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
-                    currentQuestion.options.length > 4 ? 'py-1' : 'py-1'
+                  className={`w-full rounded-lg text-md font-md transition-all duration-200 active:scale-95 flex items-center ${
+                    currentQuestion.options.length > 4 ? 'py-6' : 'py-6'
                 }`}
-                  style={{ fontFamily: "'Pixelify Sans', sans-serif", transform: 'rotate(0deg)' }}
+                  style={{ 
+                    fontFamily: "'FOT-Seurat', sans-serif", 
+                    transform: 'rotate(0deg)',
+                    backgroundImage: 'url(cropped/bread-4.png)', 
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    color: '#746664',
+                    position: 'relative',
+                    minHeight: '60px',
+                    paddingLeft: '30px',
+                    paddingRight: '30px'
+                  }}
                   dangerouslySetInnerHTML={{ __html: option }}
               />
             ))}

@@ -226,6 +226,15 @@ export default function Quiz() {
     }
   };
 
+  const handleRetry = () => {
+    // Clear all quiz data from localStorage
+    localStorage.removeItem('currentQuestion');
+    localStorage.removeItem('answerArray');
+    localStorage.removeItem('quizResult');
+    // Navigate to home
+    router.push('/');
+  };
+
   const currentQuestion = questions[currentQuestionNum.toString()];
   const [shuffleIndex, setShuffleIndex] = useState(0);
   const [question3VisitKey, setQuestion3VisitKey] = useState(0);
@@ -983,7 +992,7 @@ export default function Quiz() {
             />
           </button>
           <button
-            onClick={() => router.push('/')}
+            onClick={handleRetry}
             className="transition-all duration-200 active:scale-95"
             aria-label="Go to home"
           >

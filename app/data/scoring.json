@@ -2,43 +2,43 @@
   "neighborhoods": {
     "chinatown": {
       "name": "Chinatown",
-      "image": "/result/chinatown.PNG"
+      "image": "/result/chinatown.png"
     },
     "northbeach": {
       "name": "North Beach",
-      "image": "/result/northbeach.PNG"
+      "image": "/result/northbeach.png"
     },
     "castro": {
       "name": "Castro",
-      "image": "/result/castro.PNG"
+      "image": "/result/castro.png"
     },
     "presidio": {
       "name": "Presidio",
-      "image": "/result/presidio.PNG"
+      "image": "/result/presidio.png"
     },
     "richmond": {
       "name": "Richmond",
-      "image": "/result/richmond.PNG"
+      "image": "/result/richmond.png"
     },
     "tenderloin": {
       "name": "Tenderloin",
-      "image": "/result/tenderloin.PNG"
+      "image": "/result/tenderloin.png"
     },
     "marina": {
       "name": "Marina",
-      "image": "/result/marina.PNG"
+      "image": "/result/marina.png"
     },
     "haight": {
       "name": "Haight",
-      "image": "/result/haight.PNG"
+      "image": "/result/haight.png"
     },
     "mission": {
       "name": "Mission",
-      "image": "/result/mission.PNG"
+      "image": "/result/mission.png"
     },
     "fidi": {
       "name": "FiDi",
-      "image": "/result/fidi.PNG"
+      "image": "/result/fidi.png"
     }
   },
   "scores": {

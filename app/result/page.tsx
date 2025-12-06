@@ -154,7 +154,7 @@ function ResultContent() {
         <div className="w-full flex justify-center items-center gap-6 px-6 pt-2 pb-2">
           <button
             onClick={handleSave}
-            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle"
+            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
             aria-label="Save result"
           >
             <Image
@@ -168,7 +168,7 @@ function ResultContent() {
           </button>
           <button
             onClick={handleAgain}
-            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle"
+            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
             aria-label="Take quiz again"
           >
             <Image
@@ -209,7 +209,7 @@ function ResultContent() {
         </div>
 
         {/* Call to action at bottom */}
-        <div className="w-full px-6 pb-6">
+        <div className="w-full px-6 md:pb-6" style={{ paddingBottom: typeof window !== 'undefined' && window.innerWidth < 768 ? 'max(6rem, calc(6rem + env(safe-area-inset-bottom)))' : '1.5rem' }}>
           <motion.p
             className="text-sm text-center mb-2"
             initial={{ opacity: 0 }}
@@ -239,13 +239,13 @@ function ResultContent() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="email"
                     disabled={isSubmitting}
-                    className="flex-1 min-w-0 px-4 py-2 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA' }}
                   />
                   <button
                     type="submit"
                     disabled={isSubmitting || !email}
-                    className="flex-shrink-0 px-6 py-2 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
+                    className="flex-shrink-0 px-6 py-1.5 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
                     style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
                   >
                     {isSubmitting ? 'submitting...' : 'submit'}

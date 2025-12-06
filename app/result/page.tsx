@@ -45,6 +45,23 @@ function ResultContent() {
   const resultImage = neighborhoodData.image;
   const resultName = neighborhoodData.name;
 
+  // Image display settings per neighborhood
+  const imageSettings = useMemo(() => {
+    const settings: Record<string, { aspectRatio: string; objectPosition: string }> = {
+      haight: { aspectRatio: '7/10', objectPosition: 'center 20%' },
+      marina: { aspectRatio: '7/10', objectPosition: 'center 20%' },
+      northbeach: { aspectRatio: '7/10', objectPosition: 'center 30%' },
+      castro: { aspectRatio: '7/10', objectPosition: 'center 30%' },
+      chinatown: { aspectRatio: '7/10', objectPosition: 'center 30%' },
+      tenderloin: { aspectRatio: '7/10', objectPosition: 'center 30%' },
+      richmond: { aspectRatio: '7/10', objectPosition: 'center 30%' },
+      fidi: { aspectRatio: '7/10', objectPosition: 'center 30%' },
+      presidio: { aspectRatio: '5/7', objectPosition: 'center 30%' },
+      mission: { aspectRatio: '7/10', objectPosition: 'center 30%' }, // default
+    };
+    return settings[neighborhood] || { aspectRatio: '7/10', objectPosition: 'center 30%' };
+  }, [neighborhood]);
+
   const handleSave = async () => {
     try {
       // Fetch the image
@@ -173,13 +190,17 @@ function ResultContent() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           >
-            <div className="relative w-full" style={{ aspectRatio: 'auto' }}>
+            <div className="relative w-full overflow-hidden rounded-3xl" style={{ aspectRatio: imageSettings.aspectRatio }}>
               <Image
                 src={resultImage}
                 alt={`Your personality type: ${resultName}`}
                 width={800}
                 height={1200}
-                className="object-contain w-full h-auto rounded-3xl"
+                className="w-full h-full"
+                style={{ 
+                  objectFit: 'cover',
+                  objectPosition: imageSettings.objectPosition
+                }}
                 priority
                 unoptimized
               />
@@ -189,55 +210,78 @@ function ResultContent() {
 
         {/* Call to action at bottom */}
         <div className="w-full px-6 pb-6">
-          <form onSubmit={handleEmailSubmit} className="space-y-3">
-            <div className="flex flex-col gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="enter your email for updates"
-                disabled={isSubmitting || submitStatus === 'success'}
-                className="w-full px-4 py-2 text-sm rounded-lg border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting || submitStatus === 'success' || !email}
-                className="w-full px-4 py-2 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
-                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
-              >
-                {isSubmitting ? 'submitting...' : submitStatus === 'success' ? 'thanks! ✓' : 'submit'}
-              </button>
-            </div>
-            {submitStatus === 'error' && (
-              <motion.p
-                className="text-red-600 text-xs text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
-              >
-                oops! please try again
-              </motion.p>
-            )}
-            {submitStatus === 'success' && (
-              <motion.p
-                className="text-green-600 text-xs text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
-              >
-                we&apos;ll keep you posted!
-              </motion.p>
-            )}
-          </form>
           <motion.p
-            className="text-black text-sm text-center mt-4"
+            className="text-sm text-center mb-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+            style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
           >
-            made by 2 friends..
+            made by two friends helping people get outside more! join us :)
+          </motion.p>
+          
+          <form onSubmit={handleEmailSubmit} className="space-y-2 mb-2 max-w-full mx-auto md:max-w-md">
+            {submitStatus === 'success' ? (
+              <motion.p
+                className="text-green-600 text-sm text-center font-medium py-2"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+              >
+                excited to have you!!
+              </motion.p>
+            ) : (
+              <>
+                <div className="flex flex-row gap-2 w-full max-w-full">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="email"
+                    disabled={isSubmitting}
+                    className="flex-1 min-w-0 px-4 py-2 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA' }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !email}
+                    className="flex-shrink-0 px-6 py-2 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
+                    style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+                  >
+                    {isSubmitting ? 'submitting...' : 'submit'}
+                  </button>
+                </div>
+                {submitStatus === 'error' && (
+                  <motion.p
+                    className="text-red-600 text-xs text-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+                  >
+                    oops! please try again
+                  </motion.p>
+                )}
+              </>
+            )}
+          </form>
+
+          <motion.p
+            className="text-sm text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+          >
+            our story at{' '}
+            <a 
+              href="https://outernetexplorer.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="underline hover:text-blue-600 transition-colors"
+              style={{ color: '#4D6EAA' }}
+            >
+              outernetexplorer.com
+            </a>
           </motion.p>
         </div>
       </div>

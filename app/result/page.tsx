@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useState, Suspense, useMemo } from 'react';
+import { useState, Suspense, useMemo, FormEvent } from 'react';
 import scoringData from '../data/scoring.json';
 import ImagePreloader from '../components/ImagePreloader';
 
@@ -28,6 +28,9 @@ function ResultContent() {
   const initialNeighborhood = urlNeighborhood || storedNeighborhood || 'chinatown';
   
   const [neighborhood] = useState<string>(initialNeighborhood);
+  const [email, setEmail] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   
   // Validate neighborhood exists, fallback to chinatown if not
   const typedScoringData = scoringData as ScoringData;
@@ -89,6 +92,43 @@ function ResultContent() {
     router.push('/');
   };
 
+  const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (!email || !email.includes('@')) {
+      setSubmitStatus('error');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          neighborhood: resultName,
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setEmail('');
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Error submitting email:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="w-full h-screen flex flex-col overflow-hidden bg-[#d7f0f7] md:bg-[#d7f0f7]">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
@@ -139,7 +179,7 @@ function ResultContent() {
                 alt={`Your personality type: ${resultName}`}
                 width={800}
                 height={1200}
-                className="object-contain w-full h-auto"
+                className="object-contain w-full h-auto rounded-3xl"
                 priority
                 unoptimized
               />
@@ -148,9 +188,50 @@ function ResultContent() {
         </div>
 
         {/* Call to action at bottom */}
-        <div className="w-full px-6 pb-6 text-center">
+        <div className="w-full px-6 pb-6">
+          <form onSubmit={handleEmailSubmit} className="space-y-3">
+            <div className="flex flex-col gap-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="enter your email for updates"
+                disabled={isSubmitting || submitStatus === 'success'}
+                className="w-full px-4 py-2 text-sm rounded-lg border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting || submitStatus === 'success' || !email}
+                className="w-full px-4 py-2 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
+                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+              >
+                {isSubmitting ? 'submitting...' : submitStatus === 'success' ? 'thanks! ✓' : 'submit'}
+              </button>
+            </div>
+            {submitStatus === 'error' && (
+              <motion.p
+                className="text-red-600 text-xs text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+              >
+                oops! please try again
+              </motion.p>
+            )}
+            {submitStatus === 'success' && (
+              <motion.p
+                className="text-green-600 text-xs text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
+              >
+                we&apos;ll keep you posted!
+              </motion.p>
+            )}
+          </form>
           <motion.p
-            className="text-black text-sm"
+            className="text-black text-sm text-center mt-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}

@@ -149,7 +149,19 @@ function ResultContent() {
   return (
     <div className="w-full h-screen flex flex-col overflow-hidden bg-[#d7f0f7] md:bg-[#d7f0f7]">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
-      <div className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto" style={{ backgroundColor: '#a8d8ea' }}>
+      <div 
+        className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto md:overflow-y-hidden" 
+        style={{ 
+          backgroundColor: '#a8d8ea',
+          scrollbarWidth: 'none', /* Firefox */
+          msOverflowStyle: 'none' /* IE and Edge */
+        }}
+      >
+        <style jsx>{`
+          div::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+          }
+        `}</style>
         {/* Header with save and again buttons */}
         <div className="w-full flex justify-center items-center gap-6 px-6 pt-2 pb-2">
           <button

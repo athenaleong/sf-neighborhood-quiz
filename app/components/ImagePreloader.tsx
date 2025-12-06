@@ -73,7 +73,6 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
           resolve();
         };
         img.onerror = () => {
-          console.warn(`Failed to load image: ${src}`);
           resolve(); // Still resolve to continue loading other images
         };
         img.src = src;
@@ -87,8 +86,7 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
           setImagesLoaded(true);
         }, 300);
       })
-      .catch((error) => {
-        console.error('Error preloading images:', error);
+      .catch(() => {
         setImagesLoaded(true); // Show content anyway if there's an error
       });
   }, []);

@@ -147,32 +147,22 @@ export default function Quiz() {
       
       // Calculate scores for all answers (questions 1-14)
       // newAnswers already has the current answer set from line 182
-      console.log('Starting score calculation with answers:', newAnswers);
       for (let q = 1; q <= TOTAL_QUESTIONS; q++) {
         const questionKey = q.toString();
         const answerIndex = newAnswers[q - 1];
         
-        console.log(`Question ${q}: answerIndex=${answerIndex}, questionKey="${questionKey}"`);
-        
         if (answerIndex >= 0) {
           const optionKey = answerIndex.toString();
-          console.log(`  Checking typedScoringData.scores["${questionKey}"]["${optionKey}"]`);
           
           if (typedScoringData.scores[questionKey] && typedScoringData.scores[questionKey][optionKey]) {
             const points = typedScoringData.scores[questionKey][optionKey];
-            console.log(`  Found points:`, points);
             Object.keys(points).forEach(neighborhood => {
               const pointsToAdd = points[neighborhood];
               if (pointsToAdd > 0) {
                 finalScores[neighborhood] = (finalScores[neighborhood] || 0) + pointsToAdd;
-                console.log(`  Added ${pointsToAdd} points to ${neighborhood}`);
               }
             });
-          } else {
-            console.log(`  No scoring data found for question ${q}, option ${answerIndex}`);
           }
-        } else {
-          console.log(`  Question ${q} not answered (answerIndex: ${answerIndex})`);
         }
       }
       
@@ -197,22 +187,12 @@ export default function Quiz() {
       // Handle ties - if multiple neighborhoods have the same highest score, pick randomly
       if (tiedNeighborhoods.length > 1) {
         winningNeighborhood = tiedNeighborhoods[Math.floor(Math.random() * tiedNeighborhoods.length)];
-        console.log(`Tie detected! ${tiedNeighborhoods.length} neighborhoods tied with score ${maxScore}. Randomly selected: ${winningNeighborhood}`);
       }
       
       // Fallback: if no scores were calculated (all 0), default to first neighborhood alphabetically
       if (!winningNeighborhood || maxScore < 0) {
         winningNeighborhood = Object.keys(typedScoringData.neighborhoods)[0];
-        console.warn('No scores calculated or all scores are 0. Using default:', winningNeighborhood);
       }
-      
-      console.log('Quiz completed!', { 
-        answers: newAnswers, 
-        scores: finalScores, 
-        winner: winningNeighborhood,
-        maxScore: maxScore,
-        tiedNeighborhoods: tiedNeighborhoods.length > 1 ? tiedNeighborhoods : undefined
-      });
       
       // Save result to localStorage and navigate
       localStorage.setItem('quizResult', winningNeighborhood);
@@ -978,7 +958,7 @@ export default function Quiz() {
             className={`transition-all duration-200 ${
               currentQuestionNum === 0
                 ? 'opacity-0 cursor-not-allowed'
-                : 'active:scale-95'
+                : 'active:scale-95 cursor-pointer'
             }`}
             aria-label="Go back"
           >
@@ -993,7 +973,7 @@ export default function Quiz() {
           </button>
           <button
             onClick={handleRetry}
-            className="transition-all duration-200 active:scale-95"
+            className="transition-all duration-200 active:scale-95 cursor-pointer"
             aria-label="Go to home"
           >
             <Image
@@ -1053,7 +1033,7 @@ export default function Quiz() {
               <button
                 key={index}
                 onClick={() => handleOptionClick(index)}
-                  className={`w-full rounded-lg text-sm font-md transition-all duration-200 active:scale-95 text-left ${
+                  className={`w-full rounded-lg text-sm font-md transition-all duration-200 active:scale-95 text-left cursor-pointer ${
                     currentQuestion.options.length > 4 ? 'py-6' : 'py-6'
                 }`}
                   style={{ 

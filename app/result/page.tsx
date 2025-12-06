@@ -29,13 +29,6 @@ function ResultContent() {
   
   const [neighborhood] = useState<string>(initialNeighborhood);
   
-  console.log('Result page - Neighborhood detection:', {
-    urlNeighborhood,
-    storedNeighborhood,
-    neighborhood,
-    availableNeighborhoods: Object.keys(scoringData.neighborhoods)
-  });
-  
   // Validate neighborhood exists, fallback to chinatown if not
   const typedScoringData = scoringData as ScoringData;
   const neighborhoodData = useMemo(() => {
@@ -43,21 +36,11 @@ function ResultContent() {
       ? typedScoringData.neighborhoods[neighborhood] 
       : typedScoringData.neighborhoods.chinatown;
     
-    if (!typedScoringData.neighborhoods[neighborhood]) {
-      console.warn(`Neighborhood "${neighborhood}" not found in scoring data, using chinatown as fallback`);
-    }
-    
     return data;
   }, [neighborhood, typedScoringData]);
   
   const resultImage = neighborhoodData.image;
   const resultName = neighborhoodData.name;
-  
-  console.log('Result page - Using neighborhood data:', {
-    neighborhood,
-    resultImage,
-    resultName
-  });
 
   const handleSave = async () => {
     try {
@@ -92,8 +75,7 @@ function ResultContent() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.error('Error saving image:', error);
+    } catch {
       // Final fallback: open image in new tab
       window.open(resultImage, '_blank');
     }

@@ -3,7 +3,8 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useState, Suspense, useMemo, FormEvent } from 'react';
+import { useState, Suspense, useMemo, FormEvent, useEffect } from 'react';
+import { usePostHog } from 'posthog-js/react';
 import scoringData from '../data/scoring.json';
 import ImagePreloader from '../components/ImagePreloader';
 
@@ -21,6 +22,7 @@ interface ScoringData {
 function ResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const posthog = usePostHog();
   
   // Get neighborhood directly from URL params or localStorage
   const urlNeighborhood = searchParams.get('neighborhood');
@@ -41,6 +43,14 @@ function ResultContent() {
     
     return data;
   }, [neighborhood, typedScoringData]);
+
+  // Track result page view
+  useEffect(() => {
+    posthog?.capture('result_page_viewed', {
+      neighborhood: neighborhood,
+      neighborhood_name: neighborhoodData.name,
+    });
+  }, [posthog, neighborhood, neighborhoodData.name]);
   
   const resultImage = neighborhoodData.image;
   const resultName = neighborhoodData.name;
@@ -63,6 +73,11 @@ function ResultContent() {
   }, [neighborhood]);
 
   const handleSave = async () => {
+    // Track save button click
+    posthog?.capture('result_save_clicked', {
+      neighborhood: neighborhood,
+    });
+
     try {
       // Fetch the image
       const response = await fetch(resultImage);
@@ -77,6 +92,13 @@ function ResultContent() {
             title: 'My SF Neighborhood Personality',
             text: 'Check out my personality type!'
           });
+          
+          // Track successful share
+          posthog?.capture('result_shared', {
+            neighborhood: neighborhood,
+            method: 'web_share_api',
+          });
+          
           return; // Successfully shared/saved
         } catch (shareError) {
           // User cancelled or share failed, fall through to download method
@@ -95,13 +117,29 @@ function ResultContent() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
+      
+      // Track download
+      posthog?.capture('result_downloaded', {
+        neighborhood: neighborhood,
+        method: 'download',
+      });
     } catch {
       // Final fallback: open image in new tab
       window.open(resultImage, '_blank');
+      
+      // Track fallback
+      posthog?.capture('result_opened_new_tab', {
+        neighborhood: neighborhood,
+      });
     }
   };
 
   const handleAgain = () => {
+    // Track retry from results
+    posthog?.capture('result_again_clicked', {
+      neighborhood: neighborhood,
+    });
+
     // Clear localStorage and go back to starting screen
     localStorage.setItem('currentQuestion', '0');
     localStorage.setItem('answerArray', JSON.stringify(new Array(14).fill(-1)));
@@ -135,6 +173,12 @@ function ResultContent() {
       if (response.ok) {
         setSubmitStatus('success');
         setEmail('');
+        
+        // Track successful email submission
+        posthog?.capture('email_subscribed', {
+          neighborhood: neighborhood,
+          neighborhood_name: resultName,
+        });
       } else {
         setSubmitStatus('error');
       }
@@ -257,7 +301,7 @@ function ResultContent() {
                   <button
                     type="submit"
                     disabled={isSubmitting || !email}
-                    className="flex-shrink-0 px-6 py-1.5 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
+                    className="shrink-0 px-6 py-1.5 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
                     style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
                   >
                     {isSubmitting ? 'submitting...' : 'submit'}

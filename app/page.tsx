@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { usePostHog } from 'posthog-js/react';
 import ImagePreloader from './components/ImagePreloader';
 
 function HomeContent() {
   const router = useRouter();
+  const posthog = usePostHog();
   const [currentOverlayIndex, setCurrentOverlayIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   
@@ -59,6 +61,11 @@ function HomeContent() {
   }, [overlayImages.length, imagesLoaded]);
 
   const handleStart = () => {
+    // Track start button click
+    posthog?.capture('start_button_clicked', {
+      page: 'home',
+    });
+    
     router.push('/quiz');
   };
 

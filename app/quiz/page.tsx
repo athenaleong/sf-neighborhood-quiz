@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { usePostHog } from 'posthog-js/react';
 import questionsData from '../data/questions.json';
 import scoringData from '../data/scoring.json';
 
@@ -42,6 +43,7 @@ const TOTAL_QUESTIONS = 14;
 
 export default function Quiz() {
   const router = useRouter();
+  const posthog = usePostHog();
   const [questions] = useState<QuestionsData>(questionsData as QuestionsData);
   const typedScoringData = scoringData as ScoringData;
   
@@ -88,7 +90,12 @@ export default function Quiz() {
         // If parsing fails, keep default empty array
       }
     }
-  }, []);
+
+    // Track quiz start
+    posthog?.capture('quiz_started', {
+      total_questions: TOTAL_QUESTIONS,
+    });
+  }, [posthog]);
 
   // Save progress to localStorage whenever it changes
   useEffect(() => {
@@ -134,6 +141,18 @@ export default function Quiz() {
     }
     setAnswers(newAnswers);
 
+    // Track answer selection (for questions 1-14, not the story opener)
+    if (currentQuestionNum > 0) {
+      const currentQ = questions[currentQuestionNum.toString()];
+      posthog?.capture('quiz_answer_selected', {
+        question_number: currentQuestionNum,
+        question_text: currentQ?.question || '',
+        option_index: optionIndex,
+        option_text: currentQ?.options?.[optionIndex] || '',
+        progress: `${currentQuestionNum}/${TOTAL_QUESTIONS}`,
+      });
+    }
+
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -143,6 +162,12 @@ export default function Quiz() {
       setCurrentQuestionNum(1);
     } else if (currentQuestionNum < TOTAL_QUESTIONS) {
       setCurrentQuestionNum(currentQuestionNum + 1);
+      
+      // Track question progression for funnel
+      posthog?.capture('quiz_question_reached', {
+        question_number: currentQuestionNum + 1,
+        progress: `${currentQuestionNum + 1}/${TOTAL_QUESTIONS}`,
+      });
     } else {
       // Quiz completed - calculate winning neighborhood from all answers
       // Recalculate scores from scratch to ensure accuracy
@@ -197,6 +222,15 @@ export default function Quiz() {
         winningNeighborhood = Object.keys(typedScoringData.neighborhoods)[0];
       }
       
+      // Track quiz completion
+      posthog?.capture('quiz_completed', {
+        result_neighborhood: winningNeighborhood,
+        total_score: maxScore,
+        all_scores: finalScores,
+        tied_neighborhoods: tiedNeighborhoods.length > 1 ? tiedNeighborhoods : undefined,
+        answers: newAnswers,
+      });
+      
       // Save result to localStorage and navigate
       localStorage.setItem('quizResult', winningNeighborhood);
       router.push(`/result?neighborhood=${winningNeighborhood}`);
@@ -205,6 +239,12 @@ export default function Quiz() {
 
   const handleBack = () => {
     if (currentQuestionNum > 0) {
+      // Track back navigation
+      posthog?.capture('quiz_back_clicked', {
+        from_question: currentQuestionNum,
+        to_question: currentQuestionNum - 1,
+      });
+      
       setCurrentQuestionNum(currentQuestionNum - 1);
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -212,6 +252,12 @@ export default function Quiz() {
   };
 
   const handleRetry = () => {
+    // Track retry
+    posthog?.capture('quiz_retry_clicked', {
+      at_question: currentQuestionNum,
+      progress: `${currentQuestionNum}/${TOTAL_QUESTIONS}`,
+    });
+    
     // Clear all quiz data from localStorage
     localStorage.removeItem('currentQuestion');
     localStorage.removeItem('answerArray');

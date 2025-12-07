@@ -39,6 +39,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* Custom breakpoint for larger phones (iPhone 15 Pro Max and similar) */
+  --breakpoint-xs: 430px;
 }
 
 @media (prefers-color-scheme: dark) {

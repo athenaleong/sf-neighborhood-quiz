@@ -1021,7 +1021,7 @@ export default function Quiz() {
               transition={{ duration: 0.5 }}
             >
                 <h2 
-                  className="text-md font-md leading-tight" 
+                  className="text-sm xs:text-md leading-tight" 
                   style={{ fontFamily: "'FOT-RodinBokutoh', sans-serif", color: '#746664' }}
                   dangerouslySetInnerHTML={{ __html: currentQuestion.question }}
                 />

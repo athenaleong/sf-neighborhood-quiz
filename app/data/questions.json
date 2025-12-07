@@ -30,7 +30,7 @@
   "3": {
     "image": "/uncropped/3.png",
     "size": "large",
-    "question": "Suddenly, you spot a man in a suit. Is that mayor Daniel Lurie? He reminds you of your father. Professional, distant. Surely he’d know what to do. You run after Daniel, but he disappears into a waymo.",
+    "question": "Suddenly, you spot a man in a suit. Is that mayor Daniel Lurie? He reminds you of your father. Professional, distant. Surely he'd know what to do. You run after Daniel, but he disappears into a waymo.",
     "options": [
       "Pursue Daniel on foot",
       "Hop on a BayWheels bike to chase him",
@@ -41,7 +41,7 @@
   "4": {
     "image": "/uncropped/4.png",
     "size": "large",
-    "question": "Daniel’s waymo zips through the streets, and you try to keep up. But Big Bus trundles through, cutting you off. By the time Big Bus passes, you’ve lost sight of Daniel.",
+    "question": "Daniel's waymo zips through the streets, and you try to keep up. But Big Bus trundles through, cutting you off. By the time Big Bus passes, you've lost sight of Daniel.",
     "options": [
       "You drop to your knees and scream, shaking your fist at the sky.",
       "You growl: \"daddy is not happy.\"",
@@ -51,7 +51,7 @@
   "5": {
     "image": "/uncropped/5.png",
     "size": "large",
-    "question": "Dejected, you carry onwards on foot. You’re now on a bustling street, red paper lanterns dancing in the breeze. An elderly man catches your eye. He beckons you closer.",
+    "question": "Dejected, you carry onwards on foot. You're now on a bustling street, red paper lanterns dancing in the breeze. An elderly man catches your eye. He beckons you closer.",
     "options": [
       "Excitedly approach the mysterious old man.",
       "Cautiously approach the mysterious old man.",
@@ -111,8 +111,8 @@
   },
   "11": {
     "image": "/cropped/11.png",
-    "size": "large",
-    "question": "You start sprinting, and are swarmed by a crowd of runners, sweeping you along to a grassy field. One face looks familiar. Wait, isn’t that your…",
+    "size": "medium",
+    "question": "You start sprinting, and are swarmed by a crowd of runners, sweeping you along to a grassy field. One face looks familiar. Wait, isn't that your…",
     "options": [
       "wonderful friend!",
       "lovely partner",
@@ -122,7 +122,7 @@
   },
   "12": {
     "image": "/uncropped/Untitled_Artwork 2.png",
-    "size": "medium",
+    "size": "small",
     "question": "They're happy to see you, and ask where you've been.",
     "options": [
       "Explain you woke up in a park and couldn't remember much.",
@@ -131,7 +131,7 @@
   },
   "13": {
     "image": "/cropped/13.png",
-    "size": "large",
+    "size": "extra-large",
     "question": "They suggest retracing your steps and remind you that you were on Haight yesterday. So you hop on a bus, another bus, the cable car, a third bus, and reach Haight. You spot a candy store and decide you deserve a little treat for all your troubles.",
     "options": [
       "Ooh, some gummies would be nice.",
@@ -141,8 +141,8 @@
   },
   "14": {
     "image": "/uncropped/Untitled_Artwork 2.png",
-    "size": "large",
-    "question": "You continue trekking, and reach Dolores Park as the sun is beginning to set. It’s beautiful, so you sprawl on the grass, chewing gummies. Tuckered out, you doze off…Then you suddenly wake on a park on a hill, dazed and confused.",
+    "size": "extra-large",
+    "question": "You continue trekking, and reach Dolores Park as the sun is beginning to set. It's beautiful, so you sprawl on the grass, chewing gummies. Tuckered out, you doze off…Then you suddenly wake on a park on a hill, dazed and confused.",
     "options": [
       "Woah…who am I…how did I get here…",
       "Oh f*ck, not this again…"

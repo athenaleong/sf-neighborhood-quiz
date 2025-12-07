@@ -9,7 +9,7 @@ import scoringData from '../data/scoring.json';
 
 interface Question {
   image: string;
-  size: 'small' | 'medium' | 'large';
+  size: 'small' | 'medium' | 'large' | 'extra-large';
   question: string;
   options: string[];
 }
@@ -134,6 +134,9 @@ export default function Quiz() {
     }
     setAnswers(newAnswers);
 
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     // Move to next question
     if (currentQuestionNum === 0) {
       // Story opener - move to question 1
@@ -203,6 +206,8 @@ export default function Quiz() {
   const handleBack = () => {
     if (currentQuestionNum > 0) {
       setCurrentQuestionNum(currentQuestionNum - 1);
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -949,9 +954,9 @@ export default function Quiz() {
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#A8D8EA] md:bg-[#D7F0F7]">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
-      <div className="w-full max-w-xl mx-auto flex flex-col" style={{ backgroundColor: '#A8D8EA', minHeight: '100vh' }}>
-        {/* Header with back and retry icons */}
-        <div className="w-full flex justify-between items-center px-6 pt-2 pb-2">
+      <div className="w-full max-w-xl mx-auto flex flex-col relative" style={{ minHeight: '100vh' }}>
+        {/* Header with back and retry icons - ABSOLUTE ON TOP */}
+        <div className="w-full flex justify-between items-center px-6 pt-2 pb-2 absolute top-0 left-0 right-0 z-50" style={{ backgroundColor: 'transparent' }}>
           <button
             onClick={handleBack}
             disabled={currentQuestionNum === 0}
@@ -986,7 +991,7 @@ export default function Quiz() {
             />
           </button>
         </div>
-        {/* Question template - vertical layout */}
+        {/* Question template - vertical layout with top padding for fixed header */}
         <div className="flex flex-col items-center pb-8" style={{ position: 'relative', minHeight: 'fit-content' }}>
 
           {/* Image on top - with per-question animations */}
@@ -995,16 +1000,18 @@ export default function Quiz() {
           {/* Question text box */}
           <div className="w-full px-2" style={{ position: 'relative', zIndex: 1 }}>
             <motion.div 
-            className="rounded-lg p-12 text-center bg-center bg-no-repeat"
+            className="rounded-lg my-2 px-12 text-center bg-center bg-no-repeat"
             style={{ 
               backgroundImage: 'url(/cropped/background.png)',
               backgroundSize: '100% 100%',
               backgroundColor: 'transparent',
-              minHeight: currentQuestion.size === 'large' 
-                ? '180px' 
-                : currentQuestion.size === 'medium' 
-                  ? '150px' 
-                  : '120px',
+              minHeight: currentQuestion.size === 'extra-large'
+                ? '210px'
+                : currentQuestion.size === 'large' 
+                  ? '180px' 
+                  : currentQuestion.size === 'medium' 
+                    ? '150px' 
+                    : '120px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { usePostHog } from 'posthog-js/react';
 import questionsData from '../data/questions.json';
@@ -41,8 +40,12 @@ interface ScoringData {
 
 const TOTAL_QUESTIONS = 14;
 
-export default function Quiz() {
-  const router = useRouter();
+interface QuizViewProps {
+  onComplete: (neighborhood: string) => void;
+  onBackToHome: () => void;
+}
+
+export default function QuizView({ onComplete, onBackToHome }: QuizViewProps) {
   const posthog = usePostHog();
   const [questions] = useState<QuestionsData>(questionsData as QuestionsData);
   const typedScoringData = scoringData as ScoringData;
@@ -231,9 +234,9 @@ export default function Quiz() {
         answers: newAnswers,
       });
       
-      // Save result to localStorage and navigate
+      // Save result to localStorage and navigate to result view
       localStorage.setItem('quizResult', winningNeighborhood);
-      router.push(`/result?neighborhood=${winningNeighborhood}`);
+      onComplete(winningNeighborhood);
     }
   };
 
@@ -263,7 +266,7 @@ export default function Quiz() {
     localStorage.removeItem('answerArray');
     localStorage.removeItem('quizResult');
     // Navigate to home
-    router.push('/');
+    onBackToHome();
   };
 
   const currentQuestion = questions[currentQuestionNum.toString()];

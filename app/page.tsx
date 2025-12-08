@@ -1,15 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { usePostHog } from 'posthog-js/react';
 import ImagePreloader from './components/ImagePreloader';
+import QuizView from './components/QuizView';
+import ResultView from './components/ResultView';
+
+type View = 'home' | 'quiz' | 'result';
 
 function HomeContent() {
-  const router = useRouter();
   const posthog = usePostHog();
+  const [currentView, setCurrentView] = useState<View>('home');
+  const [resultNeighborhood, setResultNeighborhood] = useState<string>('');
   const [currentOverlayIndex, setCurrentOverlayIndex] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   
@@ -22,6 +26,22 @@ function HomeContent() {
     '/cropped/opener-overlay-3.png',
     '/cropped/opener-overlay-4.png',
   ];
+
+  // Restore view state from localStorage on mount
+  useEffect(() => {
+    const savedQuestion = localStorage.getItem('currentQuestion');
+    const savedResult = localStorage.getItem('quizResult');
+    
+    if (savedResult) {
+      // User has a completed result
+      setResultNeighborhood(savedResult);
+      setCurrentView('result');
+    } else if (savedQuestion && parseInt(savedQuestion) > 0) {
+      // User is in the middle of the quiz
+      setCurrentView('quiz');
+    }
+    // else stay on 'home'
+  }, []);
 
   // Preload all images to prevent white flashes
   useEffect(() => {
@@ -66,8 +86,32 @@ function HomeContent() {
       page: 'home',
     });
     
-    router.push('/quiz');
+    setCurrentView('quiz');
   };
+
+  const handleQuizComplete = (neighborhood: string) => {
+    setResultNeighborhood(neighborhood);
+    setCurrentView('result');
+  };
+
+  const handleBackToHome = () => {
+    setCurrentView('home');
+  };
+
+  const handleAgain = () => {
+    setCurrentView('home');
+  };
+
+  // Render the appropriate view
+  if (currentView === 'quiz') {
+    return <QuizView onComplete={handleQuizComplete} onBackToHome={handleBackToHome} />;
+  }
+
+  if (currentView === 'result') {
+    return <ResultView neighborhood={resultNeighborhood} onAgain={handleAgain} />;
+  }
+
+  // Home view
 
   return (
     <div 

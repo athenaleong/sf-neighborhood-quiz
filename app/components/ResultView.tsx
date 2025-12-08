@@ -1,11 +1,9 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { useState, Suspense, useMemo, FormEvent, useEffect, useCallback, memo } from 'react';
+import { useState, useMemo, FormEvent, useEffect, useCallback, memo } from 'react';
 import { usePostHog } from 'posthog-js/react';
 import scoringData from '../data/scoring.json';
-import ImagePreloader from '../components/ImagePreloader';
 
 interface NeighborhoodData {
   name: string;
@@ -119,17 +117,14 @@ const EmailSection = memo(({
 
 EmailSection.displayName = 'EmailSection';
 
-function ResultContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+interface ResultViewProps {
+  neighborhood: string;
+  onAgain: () => void;
+}
+
+export default function ResultView({ neighborhood, onAgain }: ResultViewProps) {
   const posthog = usePostHog();
   
-  // Get neighborhood directly from URL params or localStorage
-  const urlNeighborhood = searchParams.get('neighborhood');
-  const storedNeighborhood = typeof window !== 'undefined' ? localStorage.getItem('quizResult') : null;
-  const initialNeighborhood = urlNeighborhood || storedNeighborhood || 'chinatown';
-  
-  const [neighborhood] = useState<string>(initialNeighborhood);
   const [email, setEmail] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -268,8 +263,8 @@ function ResultContent() {
     localStorage.setItem('currentQuestion', '0');
     localStorage.setItem('answerArray', JSON.stringify(new Array(14).fill(-1)));
     localStorage.removeItem('quizResult');
-    router.push('/');
-  }, [neighborhood, layoutVariant, posthog, router]);
+    onAgain();
+  }, [neighborhood, layoutVariant, posthog, onAgain]);
 
   const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -457,22 +452,6 @@ function ResultContent() {
         <BottomSpacer />
       </div>
     </div>
-  );
-}
-
-export default function Result() {
-  return (
-    <ImagePreloader>
-      <Suspense fallback={
-        <div className="w-full h-screen flex items-center justify-center bg-[#E6E1C9]">
-          <div className="text-center text-black" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
-            Loading...
-          </div>
-        </div>
-      }>
-        <ResultContent />
-      </Suspense>
-    </ImagePreloader>
   );
 }
 

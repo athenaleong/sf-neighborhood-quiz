@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState, Suspense, useMemo, FormEvent, useEffect, useCallback, memo } from 'react';
 import { usePostHog } from 'posthog-js/react';
@@ -121,13 +121,11 @@ EmailSection.displayName = 'EmailSection';
 
 function ResultContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const posthog = usePostHog();
   
-  // Get neighborhood directly from URL params or localStorage
-  const urlNeighborhood = searchParams.get('neighborhood');
+  // Get neighborhood from localStorage only
   const storedNeighborhood = typeof window !== 'undefined' ? localStorage.getItem('quizResult') : null;
-  const initialNeighborhood = urlNeighborhood || storedNeighborhood || 'chinatown';
+  const initialNeighborhood = storedNeighborhood || 'chinatown';
   
   const [neighborhood] = useState<string>(initialNeighborhood);
   const [email, setEmail] = useState<string>('');

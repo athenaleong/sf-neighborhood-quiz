@@ -233,7 +233,7 @@ export default function Quiz() {
       
       // Save result to localStorage and navigate
       localStorage.setItem('quizResult', winningNeighborhood);
-      router.push(`/result?neighborhood=${winningNeighborhood}`);
+      router.push('/result');
     }
   };
 

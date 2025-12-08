@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "SF Neighborhood Quiz",
     images: [
       {
-        url: "/cropped/opener-base.png",
+        url: "/cropped/preview.png",
         width: 1200,
         height: 630,
         alt: "SF Neighborhood Quiz",

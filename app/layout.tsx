@@ -16,7 +16,34 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Which SF neighborhood are you?",
-  description: "Take the quiz to find out which area in San Francisco you embody, from the whimsical Haight-Ashbury to the lowkey rambunctious Tenderloin. ",
+  description: "Take the quiz to find out which area in San Francisco you embody, from the whimsical Haight-Ashbury to the lowkey rambunctious Tenderloin.",
+  metadataBase: new URL('https://www.outernet.now'),
+  openGraph: {
+    title: "Which SF neighborhood are you?",
+    description: "Take the quiz to find out which area in San Francisco you embody, from the whimsical Haight-Ashbury to the lowkey rambunctious Tenderloin.",
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "SF Neighborhood Quiz",
+    images: [
+      {
+        url: "/cropped/opener-base.png",
+        width: 1200,
+        height: 630,
+        alt: "SF Neighborhood Quiz",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Which SF neighborhood are you?",
+    description: "Take the quiz to find out which area in San Francisco you embody, from the whimsical Haight-Ashbury to the lowkey rambunctious Tenderloin.",
+    images: ["/cropped/opener-base.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const viewport: Viewport = {

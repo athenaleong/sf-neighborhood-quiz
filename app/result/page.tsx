@@ -125,6 +125,14 @@ function ResultContent() {
   
   // Get neighborhood from localStorage only
   const storedNeighborhood = typeof window !== 'undefined' ? localStorage.getItem('quizResult') : null;
+  
+  // Redirect to home if no result exists
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !storedNeighborhood) {
+      router.push('/');
+    }
+  }, [storedNeighborhood, router]);
+  
   const initialNeighborhood = storedNeighborhood || 'chinatown';
   
   const [neighborhood] = useState<string>(initialNeighborhood);

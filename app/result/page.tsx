@@ -53,8 +53,8 @@ function ResultContent() {
   }, [posthog, neighborhood, neighborhoodData.name]);
 
   // Get experiment variant for layout order
-  const layoutVariant = posthog?.getFeatureFlag('result-layout-order') as string | undefined;
-  // const layoutVariant = 'variant-a' as string | undefined;  // Force variant A
+  // const layoutVariant = posthog?.getFeatureFlag('result-layout-order') as string | undefined;
+  const layoutVariant = 'variant-a' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
@@ -396,16 +396,16 @@ function ResultContent() {
   // Bottom spacer for safe area insets
   const BottomSpacer = () => (
     <div 
-      className="w-full md:pb-6" 
+      className="w-full md:pb-2" 
       style={{ paddingBottom: typeof window !== 'undefined' && window.innerWidth < 768 ? 'max(6rem, calc(6rem + env(safe-area-inset-bottom)))' : '1.5rem' }}
     />
   );
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden bg-[#d7f0f7] md:bg-[#d7f0f7]">
+    <div className="w-full bg-[#d7f0f7] md:bg-[#d7f0f7]" style={{ height: '100dvh' }}>
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
       <div 
-        className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto md:overflow-y-hidden" 
+        className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto" 
         style={{ 
           backgroundColor: '#a8d8ea',
           scrollbarWidth: 'none', /* Firefox */

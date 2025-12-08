@@ -27,10 +27,11 @@ export const metadata: Metadata = {
     siteName: "SF Neighborhood Quiz",
     images: [
       {
-        url: "/cropped/preview.png",
+        url: "/cropped/preview.jpg",
         width: 1200,
         height: 630,
         alt: "SF Neighborhood Quiz",
+        type: "image/jpeg",
       },
     ],
   },

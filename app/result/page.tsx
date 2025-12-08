@@ -51,6 +51,20 @@ function ResultContent() {
       neighborhood_name: neighborhoodData.name,
     });
   }, [posthog, neighborhood, neighborhoodData.name]);
+
+  // Get experiment variant for layout order
+  const layoutVariant = posthog?.getFeatureFlag('result-layout-order') as string | undefined;
+  // const layoutVariant = 'variant-a' as string | undefined;  // Force variant A
+  // Track experiment exposure
+  useEffect(() => {
+    if (layoutVariant) {
+      posthog?.capture('experiment_viewed', {
+        experiment: 'result-layout-order',
+        variant: layoutVariant,
+        neighborhood: neighborhood,
+      });
+    }
+  }, [posthog, layoutVariant, neighborhood]);
   
   const resultImage = neighborhoodData.image;
   const resultName = neighborhoodData.name;
@@ -76,6 +90,7 @@ function ResultContent() {
     // Track save button click
     posthog?.capture('result_save_clicked', {
       neighborhood: neighborhood,
+      layout_variant: layoutVariant || 'control',
     });
 
     try {
@@ -138,6 +153,7 @@ function ResultContent() {
     // Track retry from results
     posthog?.capture('result_again_clicked', {
       neighborhood: neighborhood,
+      layout_variant: layoutVariant || 'control',
     });
 
     // Clear localStorage and go back to starting screen
@@ -178,6 +194,7 @@ function ResultContent() {
         posthog?.capture('email_subscribed', {
           neighborhood: neighborhood,
           neighborhood_name: resultName,
+          layout_variant: layoutVariant || 'control',
         });
       } else {
         setSubmitStatus('error');
@@ -189,6 +206,200 @@ function ResultContent() {
       setIsSubmitting(false);
     }
   };
+
+  // Define reusable component sections
+  const TopSpacer = () => (
+    <div className="w-full pt-2" />
+  );
+
+  const ButtonsSection = () => (
+    <div className="w-full flex justify-center items-center gap-6 px-6 pb-2">
+      <button
+        onClick={handleSave}
+        className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
+        aria-label="Save result"
+      >
+        <Image
+          src="/cropped/save-button.png"
+          alt="Save"
+          width={200}
+          height={100}
+          className="w-full h-auto"
+          priority
+        />
+      </button>
+      <button
+        onClick={handleAgain}
+        className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
+        aria-label="Take quiz again"
+      >
+        <Image
+          src="/cropped/again-button.png"
+          alt="Again"
+          width={200}
+          height={100}
+          className="w-full h-auto"
+          priority
+        />
+      </button>
+    </div>
+  );
+
+  const ResultImageSection = () => (
+    <div className="flex-1 flex items-center justify-center px-4 pb-4">
+      <motion.div
+        className="w-full"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
+        <div className="relative w-full overflow-hidden rounded-3xl" style={{ aspectRatio: imageSettings.aspectRatio }}>
+          <Image
+            src={resultImage}
+            alt={`Your personality type: ${resultName}`}
+            width={800}
+            height={1200}
+            className="w-full h-full"
+            style={{ 
+              objectFit: 'cover',
+              objectPosition: imageSettings.objectPosition
+            }}
+            priority
+            unoptimized
+          />
+        </div>
+      </motion.div>
+    </div>
+  );
+
+  const EmailSection = () => (
+    <div className="w-full px-6">
+      <motion.p
+        className="text-sm text-center mb-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+      >
+        made by two friends helping people get outside more! join us :)
+      </motion.p>
+      
+      <form onSubmit={handleEmailSubmit} className="space-y-2 mb-2 max-w-full mx-auto md:max-w-md">
+        {submitStatus === 'success' ? (
+          <motion.p
+            className="text-green-600 text-sm text-center font-medium py-2"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+          >
+            excited to have you!!
+          </motion.p>
+        ) : (
+          <>
+            <div className="flex flex-row gap-2 w-full max-w-full">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="email"
+                disabled={isSubmitting}
+                className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA' }}
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting || !email}
+                className="shrink-0 px-6 py-1.5 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
+                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+              >
+                {isSubmitting ? 'submitting...' : 'join'}
+              </button>
+            </div>
+            {submitStatus === 'error' && (
+              <motion.p
+                className="text-red-600 text-xs text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+              >
+                oops! please try again
+              </motion.p>
+            )}
+          </>
+        )}
+      </form>
+
+      <motion.p
+        className="text-sm text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+      >
+        our story at{' '}
+        <a 
+          href="https://outernetexplorer.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline hover:text-blue-600 transition-colors"
+          style={{ color: '#4D6EAA' }}
+          onClick={() => {
+            posthog?.capture('website_link_clicked', {
+              neighborhood: neighborhood,
+              layout_variant: layoutVariant || 'control',
+            });
+          }}
+        >
+          outernetexplorer.com
+        </a>
+      </motion.p>
+    </div>
+  );
+
+  // Render layout based on experiment variant
+  const renderLayout = () => {
+    // Variant A: Email → Buttons → Result Picture
+    if (layoutVariant === 'variant-a') {
+      return (
+        <>
+          <TopSpacer />
+          <EmailSection />
+          <ButtonsSection />
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Variant B: Email → Result Picture → Buttons
+    if (layoutVariant === 'variant-b') {
+      return (
+        <>
+          <TopSpacer />
+          <EmailSection />
+          <ResultImageSection />
+          <ButtonsSection />
+        </>
+      );
+    }
+    
+    // Control: Buttons → Result Picture → Email (current/default)
+    return (
+      <>
+        <TopSpacer />
+        <ButtonsSection />
+        <ResultImageSection />
+        <EmailSection />
+      </>
+    );
+  };
+
+  // Bottom spacer for safe area insets
+  const BottomSpacer = () => (
+    <div 
+      className="w-full md:pb-6" 
+      style={{ paddingBottom: typeof window !== 'undefined' && window.innerWidth < 768 ? 'max(6rem, calc(6rem + env(safe-area-inset-bottom)))' : '1.5rem' }}
+    />
+  );
 
   return (
     <div className="w-full h-screen flex flex-col overflow-hidden bg-[#d7f0f7] md:bg-[#d7f0f7]">
@@ -206,140 +417,10 @@ function ResultContent() {
             display: none; /* Chrome, Safari, Opera */
           }
         `}</style>
-        {/* Header with save and again buttons */}
-        <div className="w-full flex justify-center items-center gap-6 px-6 pt-2 pb-2">
-          <button
-            onClick={handleSave}
-            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
-            aria-label="Save result"
-          >
-            <Image
-              src="/cropped/save-button.png"
-              alt="Save"
-              width={200}
-              height={100}
-              className="w-full h-auto"
-              priority
-            />
-          </button>
-          <button
-            onClick={handleAgain}
-            className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
-            aria-label="Take quiz again"
-          >
-            <Image
-              src="/cropped/again-button.png"
-              alt="Again"
-              width={200}
-              height={100}
-              className="w-full h-auto"
-              priority
-            />
-          </button>
-        </div>
-
-        {/* Result image */}
-        <div className="flex-1 flex items-center justify-center px-4 pb-4">
-          <motion.div
-            className="w-full"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          >
-            <div className="relative w-full overflow-hidden rounded-3xl" style={{ aspectRatio: imageSettings.aspectRatio }}>
-              <Image
-                src={resultImage}
-                alt={`Your personality type: ${resultName}`}
-                width={800}
-                height={1200}
-                className="w-full h-full"
-                style={{ 
-                  objectFit: 'cover',
-                  objectPosition: imageSettings.objectPosition
-                }}
-                priority
-                unoptimized
-              />
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Call to action at bottom */}
-        <div className="w-full px-6 md:pb-6" style={{ paddingBottom: typeof window !== 'undefined' && window.innerWidth < 768 ? 'max(6rem, calc(6rem + env(safe-area-inset-bottom)))' : '1.5rem' }}>
-          <motion.p
-            className="text-sm text-center mb-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
-          >
-            made by two friends helping people get outside more! join us :)
-          </motion.p>
-          
-          <form onSubmit={handleEmailSubmit} className="space-y-2 mb-2 max-w-full mx-auto md:max-w-md">
-            {submitStatus === 'success' ? (
-              <motion.p
-                className="text-green-600 text-sm text-center font-medium py-2"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-              >
-                excited to have you!!
-              </motion.p>
-            ) : (
-              <>
-                <div className="flex flex-row gap-2 w-full max-w-full">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="email"
-                    disabled={isSubmitting}
-                    className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA' }}
-                  />
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !email}
-                    className="shrink-0 px-6 py-1.5 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
-                    style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-                  >
-                    {isSubmitting ? 'submitting...' : 'submit'}
-                  </button>
-                </div>
-                {submitStatus === 'error' && (
-                  <motion.p
-                    className="text-red-600 text-xs text-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-                  >
-                    oops! please try again
-                  </motion.p>
-                )}
-              </>
-            )}
-          </form>
-
-          <motion.p
-            className="text-sm text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
-          >
-            our story at{' '}
-            <a 
-              href="https://outernetexplorer.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="underline hover:text-blue-600 transition-colors"
-              style={{ color: '#4D6EAA' }}
-            >
-              outernetexplorer.com
-            </a>
-          </motion.p>
-        </div>
+        {/* Render layout based on experiment variant */}
+        {renderLayout()}
+        {/* Bottom spacer for safe area insets */}
+        <BottomSpacer />
       </div>
     </div>
   );

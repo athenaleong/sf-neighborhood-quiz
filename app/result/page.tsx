@@ -203,7 +203,7 @@ function ResultContent() {
       // Fetch the image
       const response = await fetch(resultImage);
       const blob = await response.blob();
-      const file = new File([blob], `${neighborhood}-personality-result.png`, { type: 'image/png' });
+      const file = new File([blob], `${neighborhood}-outernet.png`, { type: 'image/png' });
       
       // Check if Web Share API with files is supported (works on iOS and some Android browsers)
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -233,7 +233,7 @@ function ResultContent() {
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = `${neighborhood}-personality-result.png`;
+      link.download = `${neighborhood}-outernet.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -462,10 +462,15 @@ export default function Result() {
   return (
     <ImagePreloader>
       <Suspense fallback={
-        <div className="w-full h-screen flex items-center justify-center bg-[#E6E1C9]">
-          <div className="text-center text-black" style={{ fontFamily: "'Pixelify Sans', sans-serif" }}>
-            Loading...
-          </div>
+        <div className="w-full h-screen flex flex-col items-center justify-center bg-[#A8D8EA]">
+          <Image
+            src="/cropped/bridge-2.gif"
+            alt="Loading"
+            width={400}
+            height={300}
+            unoptimized
+            priority
+          />
         </div>
       }>
         <ResultContent />

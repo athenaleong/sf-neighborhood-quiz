@@ -11,6 +11,9 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
+    // Get the user's result neighborhood from localStorage to prioritize loading
+    const userNeighborhood = typeof window !== 'undefined' ? localStorage.getItem('quizResult') : null;
+    
     const imagesToPreload = [
       // Question images
       '/cropped/story-opener-background.png',
@@ -79,16 +82,35 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
       });
     };
 
-    Promise.all(imagesToPreload.map(loadImage))
-      .then(() => {
-        // Small delay to ensure everything is ready
-        setTimeout(() => {
-          setImagesLoaded(true);
-        }, 300);
-      })
-      .catch(() => {
-        setImagesLoaded(true); // Show content anyway if there's an error
+    // If we're on the result page and have a user's neighborhood, prioritize loading that image first
+    if (userNeighborhood) {
+      const userResultImage = `/result/${userNeighborhood}.PNG`;
+      loadImage(userResultImage).then(() => {
+        // After loading the user's result image, load the rest
+        Promise.all(imagesToPreload.map(loadImage))
+          .then(() => {
+            // Small delay to ensure everything is ready
+            setTimeout(() => {
+              setImagesLoaded(true);
+            }, 300);
+          })
+          .catch(() => {
+            setImagesLoaded(true); // Show content anyway if there's an error
+          });
       });
+    } else {
+      // Normal loading for non-result pages
+      Promise.all(imagesToPreload.map(loadImage))
+        .then(() => {
+          // Small delay to ensure everything is ready
+          setTimeout(() => {
+            setImagesLoaded(true);
+          }, 300);
+        })
+        .catch(() => {
+          setImagesLoaded(true); // Show content anyway if there's an error
+        });
+    }
   }, []);
 
   if (!imagesLoaded) {

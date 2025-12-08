@@ -2,8 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useState, Suspense, useMemo, FormEvent, useEffect } from 'react';
+import { useState, Suspense, useMemo, FormEvent, useEffect, useCallback, memo } from 'react';
 import { usePostHog } from 'posthog-js/react';
 import scoringData from '../data/scoring.json';
 import ImagePreloader from '../components/ImagePreloader';
@@ -18,6 +17,101 @@ interface ScoringData {
     [key: string]: NeighborhoodData;
   };
 }
+
+// Separate memoized EmailSection to prevent remounting on parent re-renders
+const EmailSection = memo(({ 
+  email, 
+  setEmail, 
+  isSubmitting, 
+  submitStatus,
+  handleEmailSubmit,
+  neighborhood,
+  layoutVariant,
+  posthog
+}: {
+  email: string;
+  setEmail: (email: string) => void;
+  isSubmitting: boolean;
+  submitStatus: 'idle' | 'success' | 'error';
+  handleEmailSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  neighborhood: string;
+  layoutVariant: string | undefined;
+  posthog: ReturnType<typeof usePostHog> | undefined;
+}) => (
+  <div className="w-full px-6">
+    <p
+      className="text-sm text-center mb-2"
+      style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+    >
+      made by two friends helping people get outside more! join us :)
+    </p>
+    
+    <form onSubmit={handleEmailSubmit} className="space-y-2 mb-2 max-w-full mx-auto md:max-w-md">
+      {submitStatus === 'success' ? (
+        <p
+          className="text-green-600 text-sm text-center font-medium py-2"
+          style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+        >
+          excited to have you!!
+        </p>
+      ) : (
+        <>
+          <div className="flex flex-row gap-2 w-full max-w-full">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="email"
+              disabled={isSubmitting}
+              className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA' }}
+            />
+            <button
+                type="submit"
+                disabled={isSubmitting || !email}
+                className="shrink-0 px-6 py-2 text-sm rounded-full border-2 border-blue-500 bg-white text-blue-500 font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+              >
+                {isSubmitting ? 'submitting...' : 'submit'}
+              </button>
+          </div>
+          {submitStatus === 'error' && (
+            <p
+              className="text-red-600 text-xs text-center"
+              style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+            >
+              oops! please try again
+            </p>
+          )}
+        </>
+      )}
+    </form>
+
+    <p
+      className="text-sm text-center"
+      style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+    >
+      our story at{' '}
+      <a 
+        href="https://outernetexplorer.com" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="underline hover:text-blue-600 transition-colors"
+        style={{ color: '#4D6EAA' }}
+        onClick={() => {
+          posthog?.capture('website_link_clicked', {
+            neighborhood: neighborhood,
+            layout_variant: layoutVariant || 'control',
+          });
+        }}
+      >
+        outernetexplorer.com
+      </a>
+    </p>
+  </div>
+));
+
+EmailSection.displayName = 'EmailSection';
 
 function ResultContent() {
   const router = useRouter();
@@ -54,7 +148,7 @@ function ResultContent() {
 
   // Get experiment variant for layout order
   // const layoutVariant = posthog?.getFeatureFlag('result-layout-order') as string | undefined;
-  const layoutVariant = 'variant-a' as string | undefined;  // Force variant A
+  const layoutVariant = 'variant-b' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
@@ -68,6 +162,14 @@ function ResultContent() {
   
   const resultImage = neighborhoodData.image;
   const resultName = neighborhoodData.name;
+
+  // Memoize bottom padding to avoid re-calculations on every render
+  const bottomPadding = useMemo(() => {
+    if (typeof window === 'undefined') return '1.5rem';
+    return window.innerWidth < 768 
+      ? 'max(6rem, calc(6rem + env(safe-area-inset-bottom)))' 
+      : '1.5rem';
+  }, []);
 
   // Image display settings per neighborhood
   const imageSettings = useMemo(() => {
@@ -86,7 +188,7 @@ function ResultContent() {
     return settings[neighborhood] || { aspectRatio: '7/10', objectPosition: 'center 30%' };
   }, [neighborhood]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     // Track save button click
     posthog?.capture('result_save_clicked', {
       neighborhood: neighborhood,
@@ -147,9 +249,9 @@ function ResultContent() {
         neighborhood: neighborhood,
       });
     }
-  };
+  }, [neighborhood, layoutVariant, resultImage, posthog]);
 
-  const handleAgain = () => {
+  const handleAgain = useCallback(() => {
     // Track retry from results
     posthog?.capture('result_again_clicked', {
       neighborhood: neighborhood,
@@ -161,7 +263,7 @@ function ResultContent() {
     localStorage.setItem('answerArray', JSON.stringify(new Array(14).fill(-1)));
     localStorage.removeItem('quizResult');
     router.push('/');
-  };
+  }, [neighborhood, layoutVariant, posthog, router]);
 
   const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -247,11 +349,8 @@ function ResultContent() {
 
   const ResultImageSection = () => (
     <div className="flex-1 flex items-center justify-center px-4 pb-4">
-      <motion.div
+      <div
         className="w-full"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <div className="relative w-full overflow-hidden rounded-3xl" style={{ aspectRatio: imageSettings.aspectRatio }}>
           <Image
@@ -268,116 +367,45 @@ function ResultContent() {
             unoptimized
           />
         </div>
-      </motion.div>
-    </div>
-  );
-
-  const EmailSection = () => (
-    <div className="w-full px-6">
-      <motion.p
-        className="text-sm text-center mb-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
-      >
-        made by two friends helping people get outside more! join us :)
-      </motion.p>
-      
-      <form onSubmit={handleEmailSubmit} className="space-y-2 mb-2 max-w-full mx-auto md:max-w-md">
-        {submitStatus === 'success' ? (
-          <motion.p
-            className="text-green-600 text-sm text-center font-medium py-2"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-          >
-            excited to have you!!
-          </motion.p>
-        ) : (
-          <>
-            <div className="flex flex-row gap-2 w-full max-w-full">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email"
-                disabled={isSubmitting}
-                className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA' }}
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting || !email}
-                className="shrink-0 px-6 py-1.5 text-sm rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 whitespace-nowrap"
-                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-              >
-                {isSubmitting ? 'submitting...' : 'join'}
-              </button>
-            </div>
-            {submitStatus === 'error' && (
-              <motion.p
-                className="text-red-600 text-xs text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-              >
-                oops! please try again
-              </motion.p>
-            )}
-          </>
-        )}
-      </form>
-
-      <motion.p
-        className="text-sm text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
-      >
-        our story at{' '}
-        <a 
-          href="https://outernetexplorer.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="underline hover:text-blue-600 transition-colors"
-          style={{ color: '#4D6EAA' }}
-          onClick={() => {
-            posthog?.capture('website_link_clicked', {
-              neighborhood: neighborhood,
-              layout_variant: layoutVariant || 'control',
-            });
-          }}
-        >
-          outernetexplorer.com
-        </a>
-      </motion.p>
+      </div>
     </div>
   );
 
   // Render layout based on experiment variant
   const renderLayout = () => {
+    const emailSection = (
+      <EmailSection
+        email={email}
+        setEmail={setEmail}
+        isSubmitting={isSubmitting}
+        submitStatus={submitStatus}
+        handleEmailSubmit={handleEmailSubmit}
+        neighborhood={neighborhood}
+        layoutVariant={layoutVariant}
+        posthog={posthog}
+      />
+    );
+
     // Variant A: Email → Buttons → Result Picture
     if (layoutVariant === 'variant-a') {
       return (
         <>
           <TopSpacer />
-          <EmailSection />
+          {emailSection}
           <ButtonsSection />
           <ResultImageSection />
         </>
       );
     }
     
-    // Variant B: Email → Result Picture → Buttons
+    // Variant B: Buttons → Email → Result Picture
     if (layoutVariant === 'variant-b') {
       return (
         <>
           <TopSpacer />
-          <EmailSection />
-          <ResultImageSection />
           <ButtonsSection />
+          {emailSection}
+          <ResultImageSection />
         </>
       );
     }
@@ -388,7 +416,7 @@ function ResultContent() {
         <TopSpacer />
         <ButtonsSection />
         <ResultImageSection />
-        <EmailSection />
+        {emailSection}
       </>
     );
   };
@@ -397,7 +425,7 @@ function ResultContent() {
   const BottomSpacer = () => (
     <div 
       className="w-full md:pb-2" 
-      style={{ paddingBottom: typeof window !== 'undefined' && window.innerWidth < 768 ? 'max(6rem, calc(6rem + env(safe-area-inset-bottom)))' : '1.5rem' }}
+      style={{ paddingBottom: bottomPadding }}
     />
   );
 

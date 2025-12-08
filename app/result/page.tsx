@@ -39,6 +39,12 @@ const EmailSection = memo(({
   posthog: ReturnType<typeof usePostHog> | undefined;
 }) => (
   <div className="w-full px-6">
+    <style jsx>{`
+      input::placeholder {
+        color: #4D6EAA;
+        opacity: 0.6;
+      }
+    `}</style>
     <p
       className="text-sm text-center mb-2"
       style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
@@ -57,21 +63,21 @@ const EmailSection = memo(({
       ) : (
         <>
           <div className="flex flex-row gap-2 w-full max-w-full">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email"
-              disabled={isSubmitting}
-              className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA' }}
-            />
-            <button
-                type="submit"
-                disabled={isSubmitting || !email}
-                className="shrink-0 px-6 py-2 text-sm rounded-full border-2 border-blue-500 bg-white text-blue-500 font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-              >
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="email"
+                disabled={isSubmitting}
+                className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA' }}
+              />
+              <button
+                  type="submit"
+                  disabled={isSubmitting || !email}
+                  className="shrink-0 px-6 py-2 text-sm rounded-full border-2 bg-white font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA' }}
+                >
                 {isSubmitting ? 'submitting...' : 'submit'}
               </button>
           </div>
@@ -147,8 +153,8 @@ function ResultContent() {
   }, [posthog, neighborhood, neighborhoodData.name]);
 
   // Get experiment variant for layout order
-  // const layoutVariant = posthog?.getFeatureFlag('result-layout-order') as string | undefined;
-  const layoutVariant = 'variant-b' as string | undefined;  // Force variant A
+  const layoutVariant = posthog?.getFeatureFlag('result-layout-order') as string | undefined;
+  // const layoutVariant = 'variant-a' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {

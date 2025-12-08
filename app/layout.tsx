@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SF Neighborhood Quiz",
-  description: "Which SF Neighborhood are you??",
+  title: "Which SF neighborhood are you?",
+  description: "Take the quiz to find out which area in San Francisco you embody, from the whimsical Haight-Ashbury to the lowkey rambunctious Tenderloin. ",
 };
 
 export const viewport: Viewport = {

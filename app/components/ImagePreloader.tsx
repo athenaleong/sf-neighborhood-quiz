@@ -56,17 +56,17 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
       '/cropped/opener-overlay-4.png',
       '/cropped/save-button.png',
       '/cropped/again-button.png',
-      // Result images (matching scoring.json - all uppercase .PNG)
-      '/result/castro.PNG',
-      '/result/chinatown.PNG',
-      '/result/fidi.PNG',
-      '/result/haight.PNG',
-      '/result/marina.PNG',
-      '/result/mission.PNG',
-      '/result/northbeach.PNG',
-      '/result/presidio.PNG',
-      '/result/richmond.PNG',
-      '/result/tenderloin.PNG'
+      // Result images (matching actual file names - lowercase .png)
+      '/result/castro.png',
+      '/result/chinatown.png',
+      '/result/fidi.png',
+      '/result/haight.png',
+      '/result/marina.png',
+      '/result/mission.png',
+      '/result/northbeach.png',
+      '/result/presidio.png',
+      '/result/richmond.png',
+      '/result/tenderloin.png'
     ];
 
     const loadImage = (src: string): Promise<void> => {
@@ -84,19 +84,23 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
 
     // If we're on the result page and have a user's neighborhood, prioritize loading that image first
     if (userNeighborhood) {
-      const userResultImage = `/result/${userNeighborhood}.PNG`;
-      loadImage(userResultImage).then(() => {
-        // After loading the user's result image, load the rest
-        Promise.all(imagesToPreload.map(loadImage))
-          .then(() => {
-            // Small delay to ensure everything is ready
-            setTimeout(() => {
-              setImagesLoaded(true);
-            }, 300);
-          })
-          .catch(() => {
-            setImagesLoaded(true); // Show content anyway if there's an error
-          });
+      const userResultImage = `/result/${userNeighborhood}.png`;
+      const resultUIImages = [
+        '/cropped/save-button.png',
+        '/cropped/again-button.png',
+        '/cropped/background.png', // For the email form text
+        '/cropped/bread.png' // In case user clicks "again" button
+      ];
+      
+      // Load only the images needed for the result page
+      Promise.all([
+        loadImage(userResultImage),
+        ...resultUIImages.map(img => loadImage(img))
+      ]).then(() => {
+        // Show content immediately after loading only the result page images
+        setImagesLoaded(true);
+      }).catch(() => {
+        setImagesLoaded(true); // Show content anyway if there's an error
       });
     } else {
       // Normal loading for non-result pages

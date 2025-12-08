@@ -111,6 +111,16 @@ export default function Quiz() {
     }
   }, [answers]);
 
+  // Scroll to top whenever question changes
+  useEffect(() => {
+    // Use setTimeout to ensure DOM has updated with new content
+    const scrollTimer = setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
+    
+    return () => clearTimeout(scrollTimer);
+  }, [currentQuestionNum]);
+
   // Enable scrolling by overriding body/html overflow styles
   useEffect(() => {
     const originalBodyOverflow = document.body.style.overflow;
@@ -152,9 +162,6 @@ export default function Quiz() {
         progress: `${currentQuestionNum}/${TOTAL_QUESTIONS}`,
       });
     }
-
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // Move to next question
     if (currentQuestionNum === 0) {
@@ -246,8 +253,6 @@ export default function Quiz() {
       });
       
       setCurrentQuestionNum(currentQuestionNum - 1);
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

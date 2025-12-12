@@ -43,11 +43,17 @@ const EmailSection = memo(({
     if (layoutVariant === 'variant-c') {
       return 'made by two friends bringing back the adventure in everyday life :) stay in the loop!';
     }
+    if (layoutVariant === 'variant-e' || layoutVariant === 'variant-g') {
+      return 'spend more time exploring your city and less time online! a new endeavor from creators behind Pursuit, Sit Club, and Mehran\'s Steakhouse :)';
+    }
+    if (layoutVariant === 'variant-f') {
+      return 'here\'s your neighborhood vibe! wanna actually explore it instead of just reading about it?';
+    }
     return 'made by two friends helping people get outside more! join us :)';
   };
 
   return (
-    <div className="w-full px-6">
+    <div className="w-full px-6 flex flex-col gap-4 mb-4">
       <style jsx>{`
         input::placeholder {
           color: #4D6EAA;
@@ -56,55 +62,69 @@ const EmailSection = memo(({
       `}</style>
       <p
         className="text-sm text-center mb-2"
-        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
       >
         {getCopyText()}
       </p>
     
-    <form onSubmit={handleEmailSubmit} className="space-y-2 mb-2 max-w-full mx-auto md:max-w-md">
-      {submitStatus === 'success' ? (
-        <p
-          className="text-green-600 text-sm text-center font-medium py-2"
-          style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-        >
-          excited to have you!!
-        </p>
-      ) : (
-        <>
-          <div className="flex flex-row gap-2 w-full max-w-full">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email"
-                disabled={isSubmitting}
-                className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA', fontSize: '16px' }}
-              />
-              <button
-                  type="submit"
-                  disabled={isSubmitting || !email}
-                  className="shrink-0 px-6 py-2 text-sm rounded-full border-2 bg-white font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                  style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA' }}
-                >
-                {isSubmitting ? 'submitting...' : (layoutVariant === 'variant-c' ? 'join' : 'submit')}
-              </button>
-          </div>
-          {submitStatus === 'error' && (
-            <p
-              className="text-red-600 text-xs text-center"
-              style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-            >
-              oops! please try again
-            </p>
-          )}
-        </>
-      )}
-    </form>
+    <div className="max-w-full mx-auto md:max-w-md flex flex-col gap-1 mb-2">
+      <form onSubmit={handleEmailSubmit} className="space-y-2">
+        {submitStatus === 'success' ? (
+          <p
+            className="text-green-600 text-sm text-center font-medium py-2"
+            style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+          >
+            excited to have you!!
+          </p>
+        ) : (
+          <>
+            <div className="flex flex-row gap-2 w-full max-w-full">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="email"
+                  disabled={isSubmitting}
+                  className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA', fontSize: '16px' }}
+                />
+                <button
+                    type="submit"
+                    disabled={isSubmitting || !email}
+                    className="shrink-0 px-6 py-2 text-sm rounded-full border-2 bg-white font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA' }}
+                  >
+                  {isSubmitting ? 'submitting...' : (
+                    layoutVariant === 'variant-c' ? 'join' : 
+                    layoutVariant === 'variant-e' || layoutVariant === 'variant-g' ? 'lemme in' :
+                    layoutVariant === 'variant-f' ? 'hell yeah' :
+                    'submit'
+                  )}
+                </button>
+            </div>
+            {submitStatus === 'error' && (
+              <p
+                className="text-red-600 text-xs text-center"
+                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
+              >
+                oops! please try again
+              </p>
+            )}
+          </>
+        )}
+      </form>
+
+      <p
+        className="text-center text-[10px] font-semibold"
+        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+      >
+        no spam, just a heads-up when you're off the waitlist
+      </p>
+    </div>
 
       <p
         className="text-sm text-center"
-        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
       >
         our story at{' '}
         <a 
@@ -169,8 +189,8 @@ function ResultContent() {
   }, [posthog, neighborhood, neighborhoodData.name]);
 
   // Get experiment variant for layout order
-  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v2') as string | undefined;
-  // const layoutVariant = 'variant-c' as string | undefined;  // Force variant A
+  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v3') as string | undefined;
+  // const layoutVariant = 'control' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
@@ -472,13 +492,50 @@ function ResultContent() {
       );
     }
     
-    // Control: Buttons → Result Picture → Email (current/default)
+    // Variant E: Buttons → Email → Result Picture
+    if (layoutVariant === 'variant-e') {
+      return (
+        <>
+          <TopSpacer />
+          <ButtonsSection />
+          {emailSection}
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Variant F: Buttons → Email → Result Picture
+    if (layoutVariant === 'variant-f') {
+      return (
+        <>
+          <TopSpacer />
+          <ButtonsSection />
+          {emailSection}
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Variant G: Buttons → Friends Photo → Email → Result Picture (same copy as variant-e)
+    if (layoutVariant === 'variant-g') {
+      return (
+        <>
+          <TopSpacer />
+          <ButtonsSection />
+          <FriendsPhotoSection />
+          {emailSection}
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Control: Email → Buttons → Result Picture (current/default)
     return (
       <>
         <TopSpacer />
+        {emailSection}
         <ButtonsSection />
         <ResultImageSection />
-        {emailSection}
       </>
     );
   };

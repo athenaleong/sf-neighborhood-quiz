@@ -11,11 +11,13 @@ Your result page layout A/B test is ready to launch! Here's what was done:
 **Test:** Result Page Layout Order  
 **Feature Flag:** `result-layout-order`
 
-### Three Variants:
+### Five Variants:
 
-1. **Control** (33%): Buttons → Result Picture → Email *(current design)*
-2. **Variant A** (33%): Buttons → Email → Result Picture
-3. **Variant B** (34%): Email → Result Picture → Buttons
+1. **Control** (20%): Buttons → Result Picture → Email *(current design)*
+2. **Variant A** (20%): Buttons → Email → Result Picture
+3. **Variant B** (20%): Buttons → Email → Result Picture
+4. **Variant C** (20%): Buttons → Email (new copy) → Result Picture
+5. **Variant D** (20%): Buttons → Friends Photo → Email → Result Picture
 
 ### Metrics Being Tracked:
 
@@ -39,6 +41,14 @@ Your result page layout A/B test is ready to launch! Here's what was done:
   - Added experiment exposure tracking
   - Updated all event tracking to include `layout_variant` property
 
+### Variant Details:
+
+- **Control**: Original design (Buttons → Result Picture → Email)
+- **Variant A**: Email before picture (Buttons → Email → Result Picture)  
+- **Variant B**: Same as A (Buttons → Email → Result Picture)
+- **Variant C**: Same layout as B, but copy changes from "made by two friends helping people get outside more! join us :)" to "made by two friends bringing back the adventure in everyday life :) stay in the loop!"
+- **Variant D**: Adds friends photo between buttons and email (Buttons → Friends Photo → Email → Result Picture)
+
 ### How It Works:
 
 ```typescript
@@ -55,7 +65,11 @@ posthog?.capture('experiment_viewed', {
 if (layoutVariant === 'variant-a') {
   return <Buttons /><Email /><Picture />
 } else if (layoutVariant === 'variant-b') {
-  return <Email /><Picture /><Buttons />
+  return <Buttons /><Email /><Picture />
+} else if (layoutVariant === 'variant-c') {
+  return <Buttons /><Email (new copy) /><Picture />
+} else if (layoutVariant === 'variant-d') {
+  return <Buttons /><FriendsPhoto /><Email /><Picture />
 } else {
   return <Buttons /><Picture /><Email />  // Control
 }
@@ -101,7 +115,15 @@ window.posthog.featureFlags.override({'result-layout-order': 'variant-a'})
 
 // Test Variant B:
 window.posthog.featureFlags.override({'result-layout-order': 'variant-b'})
-// Refresh - should see: Email → Picture → Buttons
+// Refresh - should see: Buttons → Email → Picture
+
+// Test Variant C:
+window.posthog.featureFlags.override({'result-layout-order': 'variant-c'})
+// Refresh - should see: Buttons → Email (new copy: "bringing back the adventure...") → Picture
+
+// Test Variant D:
+window.posthog.featureFlags.override({'result-layout-order': 'variant-d'})
+// Refresh - should see: Buttons → Friends Photo → Email → Picture
 
 // Test Control:
 window.posthog.featureFlags.override({'result-layout-order': 'control'})

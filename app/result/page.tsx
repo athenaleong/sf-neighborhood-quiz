@@ -37,20 +37,29 @@ const EmailSection = memo(({
   neighborhood: string;
   layoutVariant: string | undefined;
   posthog: ReturnType<typeof usePostHog> | undefined;
-}) => (
-  <div className="w-full px-6">
-    <style jsx>{`
-      input::placeholder {
-        color: #4D6EAA;
-        opacity: 0.6;
-      }
-    `}</style>
-    <p
-      className="text-sm text-center mb-2"
-      style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
-    >
-      made by two friends helping people get outside more! join us :)
-    </p>
+}) => {
+  // Determine copy text based on variant
+  const getCopyText = () => {
+    if (layoutVariant === 'variant-c') {
+      return 'made by two friends bringing back the adventure in everyday life :) stay in the loop!';
+    }
+    return 'made by two friends helping people get outside more! join us :)';
+  };
+
+  return (
+    <div className="w-full px-6">
+      <style jsx>{`
+        input::placeholder {
+          color: #4D6EAA;
+          opacity: 0.6;
+        }
+      `}</style>
+      <p
+        className="text-sm text-center mb-2"
+        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
+      >
+        {getCopyText()}
+      </p>
     
     <form onSubmit={handleEmailSubmit} className="space-y-2 mb-2 max-w-full mx-auto md:max-w-md">
       {submitStatus === 'success' ? (
@@ -78,7 +87,7 @@ const EmailSection = memo(({
                   className="shrink-0 px-6 py-2 text-sm rounded-full border-2 bg-white font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                   style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA' }}
                 >
-                {isSubmitting ? 'submitting...' : 'submit'}
+                {isSubmitting ? 'submitting...' : (layoutVariant === 'variant-c' ? 'join' : 'submit')}
               </button>
           </div>
           {submitStatus === 'error' && (
@@ -93,29 +102,30 @@ const EmailSection = memo(({
       )}
     </form>
 
-    <p
-      className="text-sm text-center"
-      style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
-    >
-      our story at{' '}
-      <a 
-        href="https://www.outernetexplorer.com" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="underline hover:text-blue-600 transition-colors"
-        style={{ color: '#4D6EAA' }}
-        onClick={() => {
-          posthog?.capture('website_link_clicked', {
-            neighborhood: neighborhood,
-            layout_variant: layoutVariant || 'control',
-          });
-        }}
+      <p
+        className="text-sm text-center"
+        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
       >
-        outernetexplorer.com
-      </a>
-    </p>
-  </div>
-));
+        our story at{' '}
+        <a 
+          href="https://www.outernetexplorer.com" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline hover:text-blue-600 transition-colors"
+          style={{ color: '#4D6EAA' }}
+          onClick={() => {
+            posthog?.capture('website_link_clicked', {
+              neighborhood: neighborhood,
+              layout_variant: layoutVariant || 'control',
+            });
+          }}
+        >
+          outernetexplorer.com
+        </a>
+      </p>
+    </div>
+  );
+});
 
 EmailSection.displayName = 'EmailSection';
 
@@ -160,7 +170,7 @@ function ResultContent() {
 
   // Get experiment variant for layout order
   const layoutVariant = posthog?.getFeatureFlag('result-layout-order') as string | undefined;
-  // const layoutVariant = 'variant-a' as string | undefined;  // Force variant A
+  // const layoutVariant = 'variant-c' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
@@ -383,6 +393,21 @@ function ResultContent() {
     </div>
   );
 
+  const FriendsPhotoSection = () => (
+    <div className="w-full flex justify-center px-6 pb-4">
+      <div className="w-full max-w-[200px]">
+        <Image
+          src="/cropped/athena-danielle-on-the-phone.png"
+          alt="Athena and Danielle"
+          width={200}
+          height={200}
+          className="w-full h-auto rounded-2xl"
+          priority
+        />
+      </div>
+    </div>
+  );
+
   // Render layout based on experiment variant
   const renderLayout = () => {
     const emailSection = (
@@ -416,6 +441,31 @@ function ResultContent() {
         <>
           <TopSpacer />
           <ButtonsSection />
+          {emailSection}
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Variant C: Buttons → Email (with new copy) → Result Picture
+    if (layoutVariant === 'variant-c') {
+      return (
+        <>
+          <TopSpacer />
+          <ButtonsSection />
+          {emailSection}
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Variant D: Buttons → Friends Photo → Email → Result Picture
+    if (layoutVariant === 'variant-d') {
+      return (
+        <>
+          <TopSpacer />
+          <ButtonsSection />
+          <FriendsPhotoSection />
           {emailSection}
           <ResultImageSection />
         </>

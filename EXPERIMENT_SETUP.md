@@ -8,9 +8,11 @@
 
 ### Variants:
 
-1. **Control** (33%): Buttons → Result Picture → Email (current design)
-2. **Variant A** (33%): Buttons → Email → Result Picture  
-3. **Variant B** (34%): Email → Result Picture → Buttons
+1. **Control** (20%): Buttons → Result Picture → Email (current design)
+2. **Variant A** (20%): Buttons → Email → Result Picture  
+3. **Variant B** (20%): Buttons → Email → Result Picture
+4. **Variant C** (20%): Buttons → Email (new copy: "bringing back the adventure in everyday life") → Result Picture
+5. **Variant D** (20%): Buttons → Friends Photo → Email → Result Picture
 
 ### Goal Metrics:
 
@@ -40,27 +42,41 @@ Description: Testing different element orders on result page to optimize engagem
 
 ### Step 3: Set Up Variants
 
-Click **Add variant** to create three variants:
+Click **Add variant** to create five variants:
 
 **Control:**
 ```
 Name: Control (Buttons → Picture → Email)
 Key: control
-Rollout: 33%
+Rollout: 20%
 ```
 
 **Variant A:**
 ```
 Name: Variant A (Buttons → Email → Picture)
 Key: variant-a
-Rollout: 33%
+Rollout: 20%
 ```
 
 **Variant B:**
 ```
-Name: Variant B (Email → Picture → Buttons)
+Name: Variant B (Buttons → Email → Picture)
 Key: variant-b
-Rollout: 34%
+Rollout: 20%
+```
+
+**Variant C:**
+```
+Name: Variant C (Buttons → Email [New Copy] → Picture)
+Key: variant-c
+Rollout: 20%
+```
+
+**Variant D:**
+```
+Name: Variant D (Buttons → Photo → Email → Picture)
+Key: variant-d
+Rollout: 20%
 ```
 
 ### Step 4: Set Goal Metrics
@@ -137,7 +153,19 @@ window.posthog.featureFlags.override({'result-layout-order': 'variant-a'})
 **Test Variant B:**
 ```javascript
 window.posthog.featureFlags.override({'result-layout-order': 'variant-b'})
-// Complete quiz - should see: Email → Picture → Buttons
+// Complete quiz - should see: Buttons → Email → Picture
+```
+
+**Test Variant C:**
+```javascript
+window.posthog.featureFlags.override({'result-layout-order': 'variant-c'})
+// Complete quiz - should see: Buttons → Email (new copy) → Picture
+```
+
+**Test Variant D:**
+```javascript
+window.posthog.featureFlags.override({'result-layout-order': 'variant-d'})
+// Complete quiz - should see: Buttons → Friends Photo → Email → Picture
 ```
 
 **Clear override:**
@@ -390,17 +418,25 @@ Whether you win or lose, document what you learned for future tests.
 This experiment will tell you:
 
 1. **When do users want to sign up?**
-   - Before seeing their result? (Variant B)
-   - After engaging with result? (Control/Variant A)
+   - After seeing result? (Control)
+   - Before seeing result? (Variant A, B, C, D)
 
 2. **Does CTA position matter?**
-   - Email at bottom (control) vs middle (Variant A) vs top (Variant B)
+   - Email at bottom (control) vs middle (Variants A, B, C, D)
 
-3. **What's the priority for users?**
+3. **Does copy messaging affect conversion?**
+   - "helping people get outside more" (Control, A, B, D) 
+   - "bringing back the adventure in everyday life" (Variant C)
+
+4. **Does showing the creators matter?**
+   - No photo (Control, A, B, C)
+   - With friends photo (Variant D)
+
+5. **What's the priority for users?**
    - Share first, then email?
    - Email first, then share?
 
-4. **Mobile vs Desktop differences?**
+6. **Mobile vs Desktop differences?**
    - Do mobile users prefer less scrolling (email first)?
 
 ---

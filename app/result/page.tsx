@@ -190,7 +190,7 @@ function ResultContent() {
 
   // Get experiment variant for layout order
   const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v3') as string | undefined;
-  // const layoutVariant = 'control' as string | undefined;  // Force variant A
+  // const layoutVariant = 'variant-g' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
@@ -467,63 +467,63 @@ function ResultContent() {
       );
     }
     
-    // Variant C: Buttons → Email (with new copy) → Result Picture
+    // Variant C: Email → Buttons → Result Picture (with new copy)
     if (layoutVariant === 'variant-c') {
       return (
         <>
           <TopSpacer />
-          <ButtonsSection />
           {emailSection}
+          <ButtonsSection />
           <ResultImageSection />
         </>
       );
     }
     
-    // Variant D: Buttons → Friends Photo → Email → Result Picture
+    // Variant D: Friends Photo → Email → Buttons → Result Picture
     if (layoutVariant === 'variant-d') {
       return (
         <>
           <TopSpacer />
-          <ButtonsSection />
           <FriendsPhotoSection />
           {emailSection}
+          <ButtonsSection />
           <ResultImageSection />
         </>
       );
     }
     
-    // Variant E: Buttons → Email → Result Picture
+    // Variant E: Email → Buttons → Result Picture
     if (layoutVariant === 'variant-e') {
       return (
         <>
           <TopSpacer />
-          <ButtonsSection />
           {emailSection}
+          <ButtonsSection />
           <ResultImageSection />
         </>
       );
     }
     
-    // Variant F: Buttons → Email → Result Picture
+    // Variant F: Email → Buttons → Result Picture
     if (layoutVariant === 'variant-f') {
       return (
         <>
           <TopSpacer />
-          <ButtonsSection />
           {emailSection}
+          <ButtonsSection />
           <ResultImageSection />
         </>
       );
     }
     
-    // Variant G: Buttons → Friends Photo → Email → Result Picture (same copy as variant-e)
+    // Variant G: Friends Photo → Email → Buttons → Result Picture (same copy as variant-e)
     if (layoutVariant === 'variant-g') {
       return (
         <>
           <TopSpacer />
-          <ButtonsSection />
           <FriendsPhotoSection />
           {emailSection}
+          <ButtonsSection />
           <ResultImageSection />
         </>
       );

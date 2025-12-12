@@ -99,7 +99,7 @@ const EmailSection = memo(({
     >
       our story at{' '}
       <a 
-        href="https://outernetexplorer.com" 
+        href="https://www.outernetexplorer.com" 
         target="_blank" 
         rel="noopener noreferrer"
         className="underline hover:text-blue-600 transition-colors"

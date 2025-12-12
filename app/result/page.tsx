@@ -189,7 +189,7 @@ function ResultContent() {
   }, [posthog, neighborhood, neighborhoodData.name]);
 
   // Get experiment variant for layout order
-  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v3') as string | undefined;
+  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v4') as string | undefined;
   // const layoutVariant = 'variant-g' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {

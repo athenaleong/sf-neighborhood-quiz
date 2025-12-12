@@ -126,22 +126,45 @@ const EmailSection = memo(({
         className="text-sm text-center"
         style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
       >
-        our story at{' '}
-        <a 
-          href="https://www.outernetexplorer.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="underline hover:text-blue-600 transition-colors"
-          style={{ color: '#4D6EAA' }}
-          onClick={() => {
-            posthog?.capture('website_link_clicked', {
-              neighborhood: neighborhood,
-              layout_variant: layoutVariant || 'control',
-            });
-          }}
-        >
-          outernetexplorer.com
-        </a>
+        {layoutVariant === 'variant-h' ? (
+          <>
+            find reccs based on your neighborhood personality:{' '}
+            <a 
+              href="https://www.outernetexplorer.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="underline hover:text-blue-600 transition-colors"
+              style={{ color: '#4D6EAA' }}
+              onClick={() => {
+                posthog?.capture('website_link_clicked', {
+                  neighborhood: neighborhood,
+                  layout_variant: layoutVariant || 'control',
+                });
+              }}
+            >
+              outernetexplorer.com
+            </a>
+          </>
+        ) : (
+          <>
+            our story at{' '}
+            <a 
+              href="https://www.outernetexplorer.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="underline hover:text-blue-600 transition-colors"
+              style={{ color: '#4D6EAA' }}
+              onClick={() => {
+                posthog?.capture('website_link_clicked', {
+                  neighborhood: neighborhood,
+                  layout_variant: layoutVariant || 'control',
+                });
+              }}
+            >
+              outernetexplorer.com
+            </a>
+          </>
+        )}
       </p>
     </div>
   );
@@ -189,8 +212,8 @@ function ResultContent() {
   }, [posthog, neighborhood, neighborhoodData.name]);
 
   // Get experiment variant for layout order
-  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v3') as string | undefined;
-  // const layoutVariant = 'variant-g' as string | undefined;  // Force variant A
+  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v4') as string | undefined;
+  // const layoutVariant = 'variant-h' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
@@ -518,6 +541,19 @@ function ResultContent() {
     
     // Variant G: Friends Photo → Email → Buttons → Result Picture (same copy as variant-e)
     if (layoutVariant === 'variant-g') {
+      return (
+        <>
+          <TopSpacer />
+          <FriendsPhotoSection />
+          {emailSection}
+          <ButtonsSection />
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Variant H: Friends Photo → Email → Buttons → Result Picture (same as variant-d but different bottom text)
+    if (layoutVariant === 'variant-h') {
       return (
         <>
           <TopSpacer />

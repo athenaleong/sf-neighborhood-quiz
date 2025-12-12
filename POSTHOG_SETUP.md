@@ -302,3 +302,4 @@ If you prefer to self-host PostHog:
 - **PostHog Community:** https://posthog.com/community
 - **PostHog Support:** support@posthog.com
 
+

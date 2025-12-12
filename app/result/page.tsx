@@ -423,14 +423,14 @@ function ResultContent() {
       />
     );
 
-    // Variant A: Email → Buttons → Result Picture
+    // Variant A: Buttons → Result Picture → Email
     if (layoutVariant === 'variant-a') {
       return (
         <>
           <TopSpacer />
-          {emailSection}
           <ButtonsSection />
           <ResultImageSection />
+          {emailSection}
         </>
       );
     }
@@ -472,13 +472,13 @@ function ResultContent() {
       );
     }
     
-    // Control: Buttons → Result Picture → Email (current/default)
+    // Control: Email → Buttons → Result Picture (current/default)
     return (
       <>
         <TopSpacer />
+        {emailSection}
         <ButtonsSection />
         <ResultImageSection />
-        {emailSection}
       </>
     );
   };

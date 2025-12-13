@@ -222,7 +222,7 @@ function ResultContent() {
   useEffect(() => {
     if (layoutVariant) {
       posthog?.capture('experiment_viewed', {
-        experiment: 'result-layout-order-v2',
+        experiment: 'result-layout-order-v5',
         variant: layoutVariant,
         neighborhood: neighborhood,
       });

@@ -49,6 +49,9 @@ const EmailSection = memo(({
     if (layoutVariant === 'variant-f') {
       return 'here\'s your neighborhood vibe! wanna actually explore it instead of just reading about it?';
     }
+    if (layoutVariant === 'variant-i') {
+      return 'we\'re building something to help you actually explore your city with friends. join our super cool waitlist for sexy people only';
+    }
     return 'made by two friends helping people get outside more! join us :)';
   };
 
@@ -98,6 +101,7 @@ const EmailSection = memo(({
                     layoutVariant === 'variant-c' ? 'join' : 
                     layoutVariant === 'variant-e' || layoutVariant === 'variant-g' ? 'lemme in' :
                     layoutVariant === 'variant-f' ? 'hell yeah' :
+                    layoutVariant === 'variant-i' ? 'lemme in >:)' :
                     'submit'
                   )}
                 </button>
@@ -128,7 +132,7 @@ const EmailSection = memo(({
       >
         {layoutVariant === 'variant-h' ? (
           <>
-            find reccs based on your neighborhood personality:{' '}
+            find recs based on your neighborhood personality:{' '}
             <a 
               href="https://www.outernetexplorer.com" 
               target="_blank" 
@@ -212,8 +216,8 @@ function ResultContent() {
   }, [posthog, neighborhood, neighborhoodData.name]);
 
   // Get experiment variant for layout order
-  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v4') as string | undefined;
-  // const layoutVariant = 'variant-h' as string | undefined;  // Force variant A
+  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v5') as string | undefined;
+  // const layoutVariant = 'variant-i' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
@@ -558,6 +562,18 @@ function ResultContent() {
         <>
           <TopSpacer />
           <FriendsPhotoSection />
+          {emailSection}
+          <ButtonsSection />
+          <ResultImageSection />
+        </>
+      );
+    }
+    
+    // Variant I: Email → Buttons → Result Picture (same as variant-e but different copy and button)
+    if (layoutVariant === 'variant-i') {
+      return (
+        <>
+          <TopSpacer />
           {emailSection}
           <ButtonsSection />
           <ResultImageSection />

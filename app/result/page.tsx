@@ -569,11 +569,12 @@ function ResultContent() {
       );
     }
     
-    // Variant I: Email → Buttons → Result Picture (same as variant-e but different copy and button)
+    // Variant I: Friends Photo → Email → Buttons → Result Picture (same as variant-e but different copy and button)
     if (layoutVariant === 'variant-i') {
       return (
         <>
           <TopSpacer />
+          <FriendsPhotoSection />
           {emailSection}
           <ButtonsSection />
           <ResultImageSection />

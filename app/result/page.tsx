@@ -216,13 +216,15 @@ function ResultContent() {
   }, [posthog, neighborhood, neighborhoodData.name]);
 
   // Get experiment variant for layout order
-  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v5') as string | undefined;
+  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v6') as string | 'control';
+  // const layoutVariant = 'variant-d';
+
   // const layoutVariant = 'variant-i' as string | undefined;  // Force variant A
   // Track experiment exposure
   useEffect(() => {
     if (layoutVariant) {
       posthog?.capture('experiment_viewed', {
-        experiment: 'result-layout-order-v5',
+        experiment: 'result-layout-order-v6',
         variant: layoutVariant,
         neighborhood: neighborhood,
       });
@@ -582,10 +584,11 @@ function ResultContent() {
       );
     }
     
-    // Control: Email → Buttons → Result Picture (current/default)
+    // Control: Friends Photo → Email → Buttons → Result Picture (same as variant-d)
     return (
       <>
         <TopSpacer />
+        <FriendsPhotoSection />
         {emailSection}
         <ButtonsSection />
         <ResultImageSection />

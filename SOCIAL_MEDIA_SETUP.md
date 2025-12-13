@@ -117,3 +117,4 @@ NEXT_PUBLIC_BASE_URL=https://sf-neighborhood-quiz.vercel.app
 If you want custom previews for individual result pages (e.g., when someone shares their result), you can add metadata to those pages as well. For example, in `/app/result/page.tsx`, you could generate dynamic metadata based on the neighborhood result.
 
 
+

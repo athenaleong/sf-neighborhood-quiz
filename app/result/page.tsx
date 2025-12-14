@@ -50,7 +50,7 @@ const EmailSection = memo(({
       return 'here\'s your neighborhood vibe! wanna actually explore it instead of just reading about it?';
     }
     if (layoutVariant === 'variant-i') {
-      return 'we\'re building something to help you actually explore your city with friends. join our super cool waitlist for sexy people only';
+      return 'we\'re building something to help you actually explore your city with friends. join our super cool waitlist for sexy people only.';
     }
     return 'made by two friends helping people get outside more! join us :)';
   };

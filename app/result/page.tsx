@@ -27,6 +27,7 @@ const EmailSection = memo(({
   handleEmailSubmit,
   neighborhood,
   layoutVariant,
+  landingCtaVariant,
   posthog
 }: {
   email: string;
@@ -36,6 +37,7 @@ const EmailSection = memo(({
   handleEmailSubmit: (e: FormEvent<HTMLFormElement>) => void;
   neighborhood: string;
   layoutVariant: string | undefined;
+  landingCtaVariant: string | undefined;
   posthog: ReturnType<typeof usePostHog> | undefined;
 }) => {
   // Determine copy text based on variant
@@ -53,6 +55,19 @@ const EmailSection = memo(({
       return 'we\'re building something to help you actually explore your city with friends. join our super cool waitlist for sexy people only.';
     }
     return 'made by two friends helping people get outside more! join us :)';
+  };
+
+  const getCtaText = () => {
+    if (landingCtaVariant === 'variant-a') {
+      return 'find recs based on your neighborhood personality:';
+    }
+    if (landingCtaVariant === 'variant-b') {
+      return 'are you a curious little guy? learn our complex lore at';
+    }
+    if (landingCtaVariant === 'variant-c') {
+      return 'why have we done this?? our motives at';
+    }
+    return 'our story at';
   };
 
   return (
@@ -122,7 +137,7 @@ const EmailSection = memo(({
         className="text-center text-[10px] font-semibold"
         style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
       >
-        no spam, just a heads-up when you're off the waitlist
+        no spam, just a heads-up when you&apos;re off the waitlist
       </p>
     </div>
 
@@ -130,45 +145,25 @@ const EmailSection = memo(({
         className="text-sm text-center"
         style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
       >
-        {layoutVariant === 'variant-h' ? (
-          <>
-            find recs based on your neighborhood personality:{' '}
-            <a 
-              href="https://www.outernetexplorer.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="underline hover:text-blue-600 transition-colors"
-              style={{ color: '#4D6EAA' }}
-              onClick={() => {
-                posthog?.capture('website_link_clicked', {
-                  neighborhood: neighborhood,
-                  layout_variant: layoutVariant || 'control',
-                });
-              }}
-            >
-              outernetexplorer.com
-            </a>
-          </>
-        ) : (
-          <>
-            our story at{' '}
-            <a 
-              href="https://www.outernetexplorer.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="underline hover:text-blue-600 transition-colors"
-              style={{ color: '#4D6EAA' }}
-              onClick={() => {
-                posthog?.capture('website_link_clicked', {
-                  neighborhood: neighborhood,
-                  layout_variant: layoutVariant || 'control',
-                });
-              }}
-            >
-              outernetexplorer.com
-            </a>
-          </>
-        )}
+        <>
+          {getCtaText()} {' '}
+          <a 
+            href="https://www.outernetexplorer.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="underline hover:text-blue-600 transition-colors"
+            style={{ color: '#4D6EAA' }}
+            onClick={() => {
+              posthog?.capture('website_link_clicked', {
+                neighborhood: neighborhood,
+                layout_variant: layoutVariant || 'control',
+                landing_cta_variant: landingCtaVariant || 'control',
+              });
+            }}
+          >
+            outernetexplorer.com
+          </a>
+        </>
       </p>
     </div>
   );
@@ -217,6 +212,8 @@ function ResultContent() {
 
   // Get experiment variant for layout order
   const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v6') as string | 'control';
+  const landingCtaVariant = (posthog?.getFeatureFlag('landing-page-cta') as string) || 'control';
+  // const landingCtaVariant = 'variant-b';
   // const layoutVariant = 'variant-d';
 
   // const layoutVariant = 'variant-i' as string | undefined;  // Force variant A
@@ -230,6 +227,16 @@ function ResultContent() {
       });
     }
   }, [posthog, layoutVariant, neighborhood]);
+
+  useEffect(() => {
+    if (landingCtaVariant) {
+      posthog?.capture('experiment_viewed', {
+        experiment: 'landing-page-cta',
+        variant: landingCtaVariant,
+        neighborhood: neighborhood,
+      });
+    }
+  }, [posthog, landingCtaVariant, neighborhood]);
   
   const resultImage = neighborhoodData.image;
   const resultName = neighborhoodData.name;
@@ -468,6 +475,7 @@ function ResultContent() {
         handleEmailSubmit={handleEmailSubmit}
         neighborhood={neighborhood}
         layoutVariant={layoutVariant}
+        landingCtaVariant={landingCtaVariant}
         posthog={posthog}
       />
     );

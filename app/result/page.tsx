@@ -212,7 +212,7 @@ function ResultContent() {
 
   // Get experiment variant for layout order
   const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v6') as string | 'control';
-  const landingCtaVariant = (posthog?.getFeatureFlag('landing-page-cta') as string) || 'control';
+  const landingCtaVariant = (posthog?.getFeatureFlag('landing-page-cta-test') as string) || 'control';
   // const landingCtaVariant = 'variant-b';
   // const layoutVariant = 'variant-d';
 

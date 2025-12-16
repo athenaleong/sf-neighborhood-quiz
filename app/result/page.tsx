@@ -231,7 +231,7 @@ function ResultContent() {
   useEffect(() => {
     if (landingCtaVariant) {
       posthog?.capture('experiment_viewed', {
-        experiment: 'landing-page-cta',
+        experiment: 'landing-page-cta-test',
         variant: landingCtaVariant,
         neighborhood: neighborhood,
       });

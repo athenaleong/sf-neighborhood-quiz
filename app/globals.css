@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
 @font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/fonts/bricolage-grotesque.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'FOT-RodinBokutoh';
   src: url('/fonts/FOT-RodinBokutoh Pro EB.otf') format('opentype');
   font-weight: normal;
@@ -15,7 +23,7 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #edfaff;
   --foreground: #171717;
   /* Safe area insets - default to 0 for browsers that don't support */
   --sat: 0px; /* safe-area-top */
@@ -42,13 +50,6 @@
   
   /* Custom breakpoint for larger phones (iPhone 15 Pro Max and similar) */
   --breakpoint-xs: 430px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 html,

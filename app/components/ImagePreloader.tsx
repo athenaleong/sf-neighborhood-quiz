@@ -56,17 +56,17 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
       '/cropped/opener-overlay-4.png',
       '/cropped/save-button.png',
       '/cropped/again-button.png',
-      // Result images (matching actual file names - lowercase .png)
-      '/result/castro.png',
-      '/result/chinatown.png',
-      '/result/fidi.png',
-      '/result/haight.png',
-      '/result/marina.png',
-      '/result/mission.png',
-      '/result/northbeach.png',
-      '/result/presidio.png',
-      '/result/richmond.png',
-      '/result/tenderloin.png'
+      // Compressed result images; original PNGs are fetched only when saving
+      '/result/castro.webp',
+      '/result/chinatown.webp',
+      '/result/fidi.webp',
+      '/result/haight.webp',
+      '/result/marina.webp',
+      '/result/mission.webp',
+      '/result/northbeach.webp',
+      '/result/presidio.webp',
+      '/result/richmond.webp',
+      '/result/tenderloin.webp'
     ];
 
     const loadImage = (src: string): Promise<void> => {
@@ -84,7 +84,7 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
 
     // If we're on the result page and have a user's neighborhood, prioritize loading that image first
     if (userNeighborhood) {
-      const userResultImage = `/result/${userNeighborhood}.png`;
+      const userResultImage = `/result/${userNeighborhood}.webp`;
       const resultUIImages = [
         '/cropped/save-button.png',
         '/cropped/again-button.png',
@@ -119,7 +119,7 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
 
   if (!imagesLoaded) {
     return (
-      <div className="w-full h-screen flex flex-col items-center justify-center bg-[#A8D8EA]">
+      <div className="w-full h-screen flex flex-col items-center justify-center bg-background">
         <NextImage
           src="/cropped/bridge-2.gif"
           alt="Loading"
@@ -134,4 +134,3 @@ export default function ImagePreloader({ children }: ImagePreloaderProps) {
 
   return <>{children}</>;
 }
-

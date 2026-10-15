@@ -2,10 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useState, Suspense, useMemo, FormEvent, useEffect, useCallback, memo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { usePostHog } from 'posthog-js/react';
 import scoringData from '../data/scoring.json';
 import ImagePreloader from '../components/ImagePreloader';
+import AppDownloadButtons from '../components/AppDownloadButtons';
+
+const RESULT_PAGE_VERSION = 'app-downloads';
 
 interface NeighborhoodData {
   name: string;
@@ -13,163 +16,8 @@ interface NeighborhoodData {
 }
 
 interface ScoringData {
-  neighborhoods: {
-    [key: string]: NeighborhoodData;
-  };
+  neighborhoods: Record<string, NeighborhoodData>;
 }
-
-// Separate memoized EmailSection to prevent remounting on parent re-renders
-const EmailSection = memo(({ 
-  email, 
-  setEmail, 
-  isSubmitting, 
-  submitStatus,
-  handleEmailSubmit,
-  neighborhood,
-  layoutVariant,
-  landingCtaVariant,
-  posthog
-}: {
-  email: string;
-  setEmail: (email: string) => void;
-  isSubmitting: boolean;
-  submitStatus: 'idle' | 'success' | 'error';
-  handleEmailSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  neighborhood: string;
-  layoutVariant: string | undefined;
-  landingCtaVariant: string | undefined;
-  posthog: ReturnType<typeof usePostHog> | undefined;
-}) => {
-  // Determine copy text based on variant
-  const getCopyText = () => {
-    if (layoutVariant === 'variant-c') {
-      return 'made by two friends bringing back the adventure in everyday life :) stay in the loop!';
-    }
-    if (layoutVariant === 'variant-e' || layoutVariant === 'variant-g') {
-      return 'spend more time exploring your city and less time online! a new endeavor from creators behind Pursuit, Sit Club, and Mehran\'s Steakhouse :)';
-    }
-    if (layoutVariant === 'variant-f') {
-      return 'here\'s your neighborhood vibe! wanna actually explore it instead of just reading about it?';
-    }
-    if (layoutVariant === 'variant-i') {
-      return 'we\'re building something to help you actually explore your city with friends. join our super cool waitlist for sexy people only.';
-    }
-    return 'made by two friends helping people get outside more! join us :)';
-  };
-
-  const getCtaText = () => {
-    if (landingCtaVariant === 'variant-a') {
-      return 'find recs based on your neighborhood personality:';
-    }
-    if (landingCtaVariant === 'variant-b') {
-      return 'are you a curious little guy? learn our complex lore at';
-    }
-    if (landingCtaVariant === 'variant-c') {
-      return 'why have we done this?? our motives at';
-    }
-    return 'our story at';
-  };
-
-  return (
-    <div className="w-full px-6 flex flex-col gap-4 mb-4">
-      <style jsx>{`
-        input::placeholder {
-          color: #4D6EAA;
-          opacity: 0.6;
-        }
-      `}</style>
-      <p
-        className="text-sm text-center mb-2"
-        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
-      >
-        {getCopyText()}
-      </p>
-    
-    <div className="max-w-full mx-auto md:max-w-md flex flex-col gap-1 mb-2">
-      <form onSubmit={handleEmailSubmit} className="space-y-2">
-        {submitStatus === 'success' ? (
-          <p
-            className="text-green-600 text-sm text-center font-medium py-2"
-            style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-          >
-            excited to have you!!
-          </p>
-        ) : (
-          <>
-            <div className="flex flex-row gap-2 w-full max-w-full">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="email"
-                  disabled={isSubmitting}
-                  className="flex-1 min-w-0 px-4 py-1.5 text-sm rounded-lg border-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA', fontSize: '16px' }}
-                />
-                <button
-                    type="submit"
-                    disabled={isSubmitting || !email}
-                    className="shrink-0 px-6 py-2 text-sm rounded-full border-2 bg-white font-medium hover:bg-blue-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                    style={{ fontFamily: "'FOT-Seurat', sans-serif", borderColor: '#4D6EAA', color: '#4D6EAA' }}
-                  >
-                  {isSubmitting ? 'submitting...' : (
-                    layoutVariant === 'variant-c' ? 'join' : 
-                    layoutVariant === 'variant-e' || layoutVariant === 'variant-g' ? 'lemme in' :
-                    layoutVariant === 'variant-f' ? 'hell yeah' :
-                    layoutVariant === 'variant-i' ? 'lemme in >:)' :
-                    'submit'
-                  )}
-                </button>
-            </div>
-            {submitStatus === 'error' && (
-              <p
-                className="text-red-600 text-xs text-center"
-                style={{ fontFamily: "'FOT-Seurat', sans-serif" }}
-              >
-                oops! please try again
-              </p>
-            )}
-          </>
-        )}
-      </form>
-
-      <p
-        className="text-center text-[10px] font-semibold"
-        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA' }}
-      >
-        no spam, just a heads-up when you&apos;re off the waitlist
-      </p>
-    </div>
-
-      <p
-        className="text-sm text-center"
-        style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
-      >
-        <>
-          {getCtaText()} {' '}
-          <a 
-            href="https://www.outernetexplorer.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="underline hover:text-blue-600 transition-colors"
-            style={{ color: '#4D6EAA' }}
-            onClick={() => {
-              posthog?.capture('website_link_clicked', {
-                neighborhood: neighborhood,
-                layout_variant: layoutVariant || 'control',
-                landing_cta_variant: landingCtaVariant || 'control',
-              });
-            }}
-          >
-            outernetexplorer.com
-          </a>
-        </>
-      </p>
-    </div>
-  );
-});
-
-EmailSection.displayName = 'EmailSection';
 
 function ResultContent() {
   const router = useRouter();
@@ -188,9 +36,6 @@ function ResultContent() {
   const initialNeighborhood = storedNeighborhood || 'chinatown';
   
   const [neighborhood] = useState<string>(initialNeighborhood);
-  const [email, setEmail] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   
   // Validate neighborhood exists, fallback to chinatown if not
   const typedScoringData = scoringData as ScoringData;
@@ -205,72 +50,22 @@ function ResultContent() {
   // Track result page view
   useEffect(() => {
     posthog?.capture('result_page_viewed', {
+      result_page_version: RESULT_PAGE_VERSION,
       neighborhood: neighborhood,
       neighborhood_name: neighborhoodData.name,
     });
   }, [posthog, neighborhood, neighborhoodData.name]);
 
-  // Get experiment variant for layout order
-  const layoutVariant = posthog?.getFeatureFlag('result-layout-order-v6') as string | 'control';
-  const landingCtaVariant = (posthog?.getFeatureFlag('landing-page-cta-test') as string) || 'control';
-  // const landingCtaVariant = 'variant-b';
-  // const layoutVariant = 'variant-d';
-
-  // const layoutVariant = 'variant-i' as string | undefined;  // Force variant A
-  // Track experiment exposure
-  useEffect(() => {
-    if (layoutVariant) {
-      posthog?.capture('experiment_viewed', {
-        experiment: 'result-layout-order-v6',
-        variant: layoutVariant,
-        neighborhood: neighborhood,
-      });
-    }
-  }, [posthog, layoutVariant, neighborhood]);
-
-  useEffect(() => {
-    if (landingCtaVariant) {
-      posthog?.capture('experiment_viewed', {
-        experiment: 'landing-page-cta-test',
-        variant: landingCtaVariant,
-        neighborhood: neighborhood,
-      });
-    }
-  }, [posthog, landingCtaVariant, neighborhood]);
-  
   const resultImage = neighborhoodData.image;
+  // Keep the full-resolution PNG for saving and sharing.
+  const displayResultImage = resultImage.replace(/\.png$/, '.webp');
   const resultName = neighborhoodData.name;
-
-  // Memoize bottom padding to avoid re-calculations on every render
-  const bottomPadding = useMemo(() => {
-    if (typeof window === 'undefined') return '1.5rem';
-    return window.innerWidth < 768 
-      ? 'max(6rem, calc(6rem + env(safe-area-inset-bottom)))' 
-      : '1.5rem';
-  }, []);
-
-  // Image display settings per neighborhood
-  const imageSettings = useMemo(() => {
-    const settings: Record<string, { aspectRatio: string; objectPosition: string }> = {
-      haight: { aspectRatio: '7/10', objectPosition: 'center 20%' },
-      marina: { aspectRatio: '7/10', objectPosition: 'center 20%' },
-      northbeach: { aspectRatio: '7/10', objectPosition: 'center 30%' },
-      castro: { aspectRatio: '7/10', objectPosition: 'center 30%' },
-      chinatown: { aspectRatio: '7/10', objectPosition: 'center 30%' },
-      tenderloin: { aspectRatio: '7/10', objectPosition: 'center 30%' },
-      richmond: { aspectRatio: '7/10', objectPosition: 'center 30%' },
-      fidi: { aspectRatio: '7/10', objectPosition: 'center 30%' },
-      presidio: { aspectRatio: '5/7', objectPosition: 'center 30%' },
-      mission: { aspectRatio: '7/10', objectPosition: 'center 30%' }, // default
-    };
-    return settings[neighborhood] || { aspectRatio: '7/10', objectPosition: 'center 30%' };
-  }, [neighborhood]);
 
   const handleSave = useCallback(async () => {
     // Track save button click
     posthog?.capture('result_save_clicked', {
       neighborhood: neighborhood,
-      layout_variant: layoutVariant || 'control',
+      result_page_version: RESULT_PAGE_VERSION,
     });
 
     try {
@@ -327,13 +122,13 @@ function ResultContent() {
         neighborhood: neighborhood,
       });
     }
-  }, [neighborhood, layoutVariant, resultImage, posthog]);
+  }, [neighborhood, resultImage, posthog]);
 
   const handleAgain = useCallback(() => {
     // Track retry from results
     posthog?.capture('result_again_clicked', {
       neighborhood: neighborhood,
-      layout_variant: layoutVariant || 'control',
+      result_page_version: RESULT_PAGE_VERSION,
     });
 
     // Clear localStorage and go back to starting screen
@@ -341,297 +136,97 @@ function ResultContent() {
     localStorage.setItem('answerArray', JSON.stringify(new Array(14).fill(-1)));
     localStorage.removeItem('quizResult');
     router.push('/');
-  }, [neighborhood, layoutVariant, posthog, router]);
-
-  const handleEmailSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    if (!email || !email.includes('@')) {
-      setSubmitStatus('error');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitStatus('idle');
-
-    try {
-      const response = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          neighborhood: resultName,
-        }),
-      });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-        setEmail('');
-        
-        // Track successful email submission
-        posthog?.capture('email_subscribed', {
-          neighborhood: neighborhood,
-          neighborhood_name: resultName,
-          layout_variant: layoutVariant || 'control',
-        });
-      } else {
-        setSubmitStatus('error');
-      }
-    } catch (error) {
-      console.error('Error submitting email:', error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Define reusable component sections
-  const TopSpacer = () => (
-    <div className="w-full pt-2" />
-  );
-
-  const ButtonsSection = () => (
-    <div className="w-full flex justify-center items-center gap-6 px-6 pb-2">
-      <button
-        onClick={handleSave}
-        className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
-        aria-label="Save result"
-      >
-        <Image
-          src="/cropped/save-button.png"
-          alt="Save"
-          width={200}
-          height={100}
-          className="w-full h-auto"
-          priority
-        />
-      </button>
-      <button
-        onClick={handleAgain}
-        className="transition-all duration-200 active:scale-95 w-[40%] animate-bounce-subtle cursor-pointer"
-        aria-label="Take quiz again"
-      >
-        <Image
-          src="/cropped/again-button.png"
-          alt="Again"
-          width={200}
-          height={100}
-          className="w-full h-auto"
-          priority
-        />
-      </button>
-    </div>
-  );
-
-  const ResultImageSection = () => (
-    <div className="flex-1 flex items-center justify-center px-4 pb-4">
-      <div
-        className="w-full"
-      >
-        <div className="relative w-full overflow-hidden rounded-3xl" style={{ aspectRatio: imageSettings.aspectRatio }}>
-          <Image
-            src={resultImage}
-            alt={`Your personality type: ${resultName}`}
-            width={800}
-            height={1200}
-            className="w-full h-full"
-            style={{ 
-              objectFit: 'cover',
-              objectPosition: imageSettings.objectPosition
-            }}
-            priority
-            unoptimized
-          />
-        </div>
-      </div>
-    </div>
-  );
-
-  const FriendsPhotoSection = () => (
-    <div className="w-full flex justify-center px-6 pb-4">
-      <div className="w-full max-w-[200px]">
-        <Image
-          src="/cropped/athena-danielle-on-the-phone.png"
-          alt="Athena and Danielle"
-          width={200}
-          height={200}
-          className="w-full h-auto rounded-2xl"
-          priority
-        />
-      </div>
-    </div>
-  );
-
-  // Render layout based on experiment variant
-  const renderLayout = () => {
-    const emailSection = (
-      <EmailSection
-        email={email}
-        setEmail={setEmail}
-        isSubmitting={isSubmitting}
-        submitStatus={submitStatus}
-        handleEmailSubmit={handleEmailSubmit}
-        neighborhood={neighborhood}
-        layoutVariant={layoutVariant}
-        landingCtaVariant={landingCtaVariant}
-        posthog={posthog}
-      />
-    );
-
-    // Variant A: Email → Buttons → Result Picture
-    if (layoutVariant === 'variant-a') {
-      return (
-        <>
-          <TopSpacer />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant B: Buttons → Email → Result Picture
-    if (layoutVariant === 'variant-b') {
-      return (
-        <>
-          <TopSpacer />
-          <ButtonsSection />
-          {emailSection}
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant C: Email → Buttons → Result Picture (with new copy)
-    if (layoutVariant === 'variant-c') {
-      return (
-        <>
-          <TopSpacer />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant D: Friends Photo → Email → Buttons → Result Picture
-    if (layoutVariant === 'variant-d') {
-      return (
-        <>
-          <TopSpacer />
-          <FriendsPhotoSection />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant E: Email → Buttons → Result Picture
-    if (layoutVariant === 'variant-e') {
-      return (
-        <>
-          <TopSpacer />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant F: Email → Buttons → Result Picture
-    if (layoutVariant === 'variant-f') {
-      return (
-        <>
-          <TopSpacer />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant G: Friends Photo → Email → Buttons → Result Picture (same copy as variant-e)
-    if (layoutVariant === 'variant-g') {
-      return (
-        <>
-          <TopSpacer />
-          <FriendsPhotoSection />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant H: Friends Photo → Email → Buttons → Result Picture (same as variant-d but different bottom text)
-    if (layoutVariant === 'variant-h') {
-      return (
-        <>
-          <TopSpacer />
-          <FriendsPhotoSection />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Variant I: Friends Photo → Email → Buttons → Result Picture (same as variant-e but different copy and button)
-    if (layoutVariant === 'variant-i') {
-      return (
-        <>
-          <TopSpacer />
-          <FriendsPhotoSection />
-          {emailSection}
-          <ButtonsSection />
-          <ResultImageSection />
-        </>
-      );
-    }
-    
-    // Control: Friends Photo → Email → Buttons → Result Picture (same as variant-d)
-    return (
-      <>
-        <TopSpacer />
-        <FriendsPhotoSection />
-        {emailSection}
-        <ButtonsSection />
-        <ResultImageSection />
-      </>
-    );
-  };
-
-  // Bottom spacer for safe area insets
-  const BottomSpacer = () => (
-    <div 
-      className="w-full md:pb-2" 
-      style={{ paddingBottom: bottomPadding }}
-    />
-  );
+  }, [neighborhood, posthog, router]);
 
   return (
-    <div className="w-full bg-[#d7f0f7] md:bg-[#d7f0f7]" style={{ height: '100dvh' }}>
-      {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
-      <div 
-        className="w-full h-full max-w-xl mx-auto flex flex-col overflow-y-auto" 
-        style={{ 
-          backgroundColor: '#a8d8ea',
-          scrollbarWidth: 'none', /* Firefox */
-          msOverflowStyle: 'none' /* IE and Edge */
-        }}
+    <div className="w-full bg-background" style={{ height: '100dvh' }}>
+      <div
+        className="w-full h-full mx-auto flex flex-col overflow-y-auto bg-background"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <style jsx>{`
           div::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
           }
         `}</style>
-        {/* Render layout based on experiment variant */}
-        {renderLayout()}
-        {/* Bottom spacer for safe area insets */}
-        <BottomSpacer />
+        <div className="mx-auto w-full max-w-xl shrink-0">
+          <div className="w-full pt-2" />
+          <div className="w-full shrink-0 flex justify-center px-6 pb-3">
+            <div className="w-full max-w-[112px] md:max-w-[240px]">
+              <Image
+                src="/cropped/athena-danielle-names.png"
+                alt="Athena and Danielle with arrows pointing to their names"
+                width={459}
+                height={387}
+                className="w-full h-auto"
+                priority
+              />
+            </div>
+          </div>
+          <div className="w-full px-4 flex flex-col gap-3 mb-4 md:px-6 md:gap-4">
+            <p
+              className="text-xs leading-[18px] text-center md:text-sm md:leading-5"
+              style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
+            >
+              we&apos;re building something to help you actually explore your city with friends. join our super cool app for sexy people only.
+            </p>
+            <AppDownloadButtons onAction={(event) => posthog?.capture(event, {
+              neighborhood,
+              result_page_version: RESULT_PAGE_VERSION,
+            })} />
+            <p
+              className="text-xs leading-[18px] text-center md:text-sm md:leading-5"
+              style={{ fontFamily: "'FOT-Seurat', sans-serif", color: '#4D6EAA', fontWeight: 700 }}
+            >
+              why have we done this?? our motives at{' '}
+              <a
+                href="https://www.outernetexplorer.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-blue-600 transition-colors"
+                style={{ color: '#4D6EAA' }}
+                onClick={() => posthog?.capture('website_link_clicked', {
+                  neighborhood,
+                  result_page_version: RESULT_PAGE_VERSION,
+                })}
+              >
+                outernetexplorer.com
+              </a>
+            </p>
+          </div>
+          <div className="w-full shrink-0 flex justify-center items-center gap-4 px-4 pb-2">
+            <button
+              onClick={handleSave}
+              className="transition-all duration-200 active:scale-95 cursor-pointer w-[104px] min-h-11"
+              aria-label="Save result"
+            >
+              <Image src="/cropped/save-button.png" alt="Save" width={200} height={100} className="w-full h-auto" priority />
+            </button>
+            <button
+              onClick={handleAgain}
+              className="transition-all duration-200 active:scale-95 cursor-pointer w-[104px] min-h-11"
+              aria-label="Take quiz again"
+            >
+              <Image src="/cropped/again-button.png" alt="Again" width={200} height={100} className="w-full h-auto" priority />
+            </button>
+          </div>
+          <div className="w-full shrink-0 px-3 pb-3">
+            <div className="w-full">
+              <div className="relative w-full overflow-hidden rounded-3xl">
+                <Image
+                  src={displayResultImage}
+                  alt={`Your personality type: ${resultName}`}
+                  width={1080}
+                  height={1920}
+                  className="w-full h-auto"
+                  priority
+                  unoptimized
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="w-full md:pb-2" style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }} />
       </div>
     </div>
   );
@@ -640,21 +235,7 @@ function ResultContent() {
 export default function Result() {
   return (
     <ImagePreloader>
-      <Suspense fallback={
-        <div className="w-full h-screen flex flex-col items-center justify-center bg-[#A8D8EA]">
-          <Image
-            src="/cropped/bridge-2.gif"
-            alt="Loading"
-            width={400}
-            height={300}
-            unoptimized
-            priority
-          />
-        </div>
-      }>
-        <ResultContent />
-      </Suspense>
+      <ResultContent />
     </ImagePreloader>
   );
 }
-

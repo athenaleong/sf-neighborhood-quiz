@@ -14,7 +14,7 @@ export default function NotFound() {
 
   // Show loading animation while redirecting
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-[#A8D8EA]">
+    <div className="w-full h-screen flex flex-col items-center justify-center bg-background">
       <Image
         src="/cropped/bridge-2.gif"
         alt="Loading"
@@ -26,4 +26,3 @@ export default function NotFound() {
     </div>
   );
 }
-

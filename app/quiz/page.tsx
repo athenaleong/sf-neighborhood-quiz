@@ -996,14 +996,14 @@ export default function Quiz() {
 
   if (!currentQuestion) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-[#D7F0F7] md:bg-black">
+      <div className="w-full h-screen flex items-center justify-center bg-background">
         <div className="text-center text-black">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-[#A8D8EA] md:bg-[#D7F0F7]">
+    <div className="w-full min-h-screen flex flex-col bg-background">
       {/* Mobile view container - full screen on phones, phone-sized on larger screens */}
       <div className="w-full max-w-xl mx-auto flex flex-col relative" style={{ minHeight: '100vh' }}>
         {/* Header with back and retry icons - ABSOLUTE ON TOP */}
@@ -1116,4 +1116,3 @@ export default function Quiz() {
     </div>
   );
 }
-
